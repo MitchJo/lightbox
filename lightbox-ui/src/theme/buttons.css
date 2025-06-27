@@ -27,6 +27,16 @@ button.info{
     color: white;
 }
 
+button.success{
+    background-color: var(--success-color);
+    color: white;
+}
+
+button.danger{
+    background-color: var(--danger-color);
+    color: white;
+}
+
 button.default{
     background-color: var(--surface-color);
     color: var(--text-color);
@@ -40,4 +50,20 @@ button.border{
 
 button.border.border-primary{
     border-color: var(--primary-color);
+}
+
+button.icon{
+    background-color: transparent;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+button.icon.sm{
+    width: 30px;
+    height: 30px;
+}
+
+button.icon.loading-icon{
+    background-image: var( --circle-loader-icon);
 }

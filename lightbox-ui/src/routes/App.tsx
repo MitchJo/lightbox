@@ -4,18 +4,20 @@ import ConfigurationForm from "../components/ConfigurationForm";
 
 import useRedux from '../store';
 import sagaStore from '../store/saga';
-import { mqttEvents, readConfig, saveConfig } from "../actions";
+import { mqttConnect, mqttDisconnect, mqttEvents, readConfig, saveConfig } from "../actions";
 import { onMount } from "solid-js";
 
 const App = (props: any) => {
 
     const [
-        {configurations},
-        {readConfiguration, saveConfigurations, mqttEventsListener}
+        {configurations, mqtt},
+        {readConfiguration, saveConfigurations, mqttEventsListener, mqttConnectC, mqttDisconnectC}
     ] = useRedux(sagaStore,{
         readConfiguration: readConfig,
         saveConfigurations: saveConfig,
-        mqttEventsListener: mqttEvents
+        mqttEventsListener: mqttEvents,
+        mqttConnectC: mqttConnect,
+        mqttDisconnectC: mqttDisconnect
     });
 
     let configModal: any;
@@ -48,7 +50,7 @@ const App = (props: any) => {
 
 
     return <>
-        <Header title="Control your LightBox" onSettings={showConfiguration}/>
+        <Header title="Control your LightBox" onSettings={showConfiguration} mqttStatus={mqtt.status} onMqttConnect={mqttConnectC} onMqttDisconnect={mqttDisconnectC}/>
         <Modal ref={configModal}>
             <ConfigurationForm onClose={handleConfigFormClose} onFormSubmit={handleConfigFormSubmit} formValues={configurations}/>
         </Modal>
