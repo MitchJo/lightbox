@@ -1,0 +1,31 @@
+.input-file-group{
+    position: relative;
+    width: auto;
+    min-height: 20px;
+}
+
+.input-file-group.no-file > span{
+    background-color: var(--secondary-color);
+    padding-left: 4px;
+    color: var(--surface-color);
+    border-radius: 2px;
+}
+
+
+.input-file-group span,
+input[type=file].overlay{
+    position: absolute;
+    cursor: pointer;
+}
+
+.input-file-group span{
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width:250px;
+    min-width: 120px;
+    height: 20px;
+}
+
+input[type=file].overlay {
+    opacity: 0;
+}

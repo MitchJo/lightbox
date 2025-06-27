@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
+  <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
+  <link rel="stylesheet" href="assets/css/index.css">
+  <title>Lightbox Controller</title>
+</head>
+
+<body>
+  <header>
+    <nav>
+      <h1>Control your lightbox</h1>
+      <button id="showSettings">Settings</button>
+    </nav>
+  </header>
+
+  <dialog id="settingsContainer">
+
+    <div class="disconnectedContainer">
+
+    <form action="#" id="mqttFormParameters">
+
+
+      <fieldset class="row">
+        <select name="protocol" id="" name="protocol" tabindex="1">
+          <option value="mqtts" selected>MQTTS://</option>
+          <option value="wss" selected>WSS://</option>
+        </select>
+        <input type="text" name="host" required placeholder="host" tabindex="2">
+        <input type="number" name="port" required placeholder="port" tabindex="3">
+      </fieldset>
+
+      <fieldset class="row">
+        <label for="">Private key:</label>
+        <input type="file" accept=".pem, application/x-pem-file" name="privateKey" required tabindex="4">
+      </fieldset>
+
+      <fieldset class="row">
+        <label for="">Root CA:</label>
+        <input type="file" accept=".pem, application/x-pem-file" name="rootCa" required tabindex="5">
+      </fieldset>
+
+      <fieldset class="row">
+        <label for="">Device Cert:</label>
+        <input type="file" accept="application/x-x509-ca-cert, .crt" name="deviceCert" required tabindex="6">
+      </fieldset>
+      
+      <fieldset class="row submit">
+        <input type="submit" value="Save" tabindex="7">
+        <button id="closeSettings" tabindex="8">Close</button>
+      </fieldset>
+
+
+    </form>
+
+    </div>
+
+  </dialog>
+  
+  <button id="connectMqtt">Connect</button>
+  <div class="connectedContainer">
+
+  </div>
+
+
+  <button id="disconnectMqtt" class="hide">Disconnect</button>
+
+  <input type="text" id="topicName" class="hide" placeholder="topic" />
+
+  <input type="color" name="" id="colorChooser" class="hide" />
+  <input type="range" name="" id="brightnessController" min="20" max="250" class="hide" step="10" />
+
+
+
+</body>
+<script src="renderer/index.js"></script>
+
+</html>

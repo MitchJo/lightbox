@@ -1,0 +1,43 @@
+
+button{
+    outline: none;
+    border: none;
+    border-radius: 4px;
+    width: fit-content;
+    height: fit-content;
+    padding: 8px 12px;
+    transform-origin: center;
+    transform: scale(1);
+    transition: all 0.2s linear;
+    cursor: pointer;
+    background-color: transparent;
+}
+
+button:active{
+    transform: scale(0.8);
+}
+
+button.primary{
+    background-color: var(--primary-color);
+    color: white;
+}
+
+button.info{
+    background-color: var(--info-color);
+    color: white;
+}
+
+button.default{
+    background-color: var(--surface-color);
+    color: var(--text-color);
+}
+
+button.border{
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--secondary-color);
+}
+
+button.border.border-primary{
+    border-color: var(--primary-color);
+}

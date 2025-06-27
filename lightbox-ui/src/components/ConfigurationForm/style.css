@@ -1,0 +1,16 @@
+.config-form-container{
+    background: var(--background-color);
+    border-radius: 10px;
+    position: absolute;
+    padding: 1rem;
+    left: 50%;
+    top: calc(50%);
+    translate: -50% -50%;
+}
+
+.config-form-container form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    row-gap: .5rem;
+}

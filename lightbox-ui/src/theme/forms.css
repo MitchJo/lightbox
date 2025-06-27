@@ -1,0 +1,22 @@
+
+fieldset{
+    outline: none;
+    border: none;
+    padding: 0;
+}
+
+fieldset.row {
+    display: flex;
+    gap: .5rem;
+    align-items: center;
+}
+
+fieldset.row.submit {
+    justify-content: flex-end;
+    margin-top: .5em;
+}
+
+fieldset.row label {
+    font-size: small;
+    font-weight: 600;
+}

@@ -1,0 +1,64 @@
+const { ipcMain } = require('electron')
+
+const {mqttConstants, fileConstants} = require("./constants");
+const { mqttHelpers, configurationFiles } = require("./main");
+const path = require('path')
+
+exports.initializeHandlers = (app) => {
+    const appDataPath = app.getPath('userData');
+    const appFilesDir = path.join(appDataPath, 'app_files');
+
+    ipcMain.handle(mqttConstants.MqttConnect, async (event, data) => {
+        const params = await configurationFiles.getConfigurations(appFilesDir);
+        try {
+            return mqttHelpers.mqttConnect(params);
+        } catch (error) {
+            console.error('[Main Process] Error executing Node function:', error);
+            throw new Error(`Failed to execute Node function: ${error.message}`);
+        }
+
+    });
+
+    ipcMain.handle(mqttConstants.MqttPublish, async (event, data) => {
+        try {
+            mqttHelpers.mqttPublish(data);
+        } catch (error) {
+            console.error('[Main Process] Error executing Node function:', error);
+            throw new Error(`Failed to execute Node function: ${error.message}`);
+        }
+
+    });
+
+    ipcMain.handle(mqttConstants.MqttDisConnect, async (event, data) => {
+
+        try {
+            mqttHelpers.mqttDisconnect();
+        } catch (error) {
+            console.error('[Main Process] Error executing Node function:', error);
+            throw new Error(`Failed to execute Node function: ${error.message}`);
+        }
+
+    });
+
+
+    ipcMain.handle(fileConstants.setConfiguration, async (event, params) => {
+
+        try {
+            return configurationFiles.setConfigurations(appFilesDir, params);
+        } catch (error) {
+            console.error('[Main Process] Error executing Node function:', error);
+            throw new Error(`Failed to execute Node function: ${error.message}`);
+        }
+
+    });
+
+    ipcMain.handle(fileConstants.getConfiguration, async (event, data) => { 
+        try {
+            return configurationFiles.getConfigurations(appFilesDir);
+        } catch (error) {
+            console.error('[Main Process] Error executing Node function:', error);
+            throw new Error(`Failed to execute Node function: ${error.message}`);
+        }
+    });
+
+}
