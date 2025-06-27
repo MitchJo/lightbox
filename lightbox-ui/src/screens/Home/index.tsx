@@ -5,6 +5,7 @@ import ColorWheel from "../../components/ColorWheel";
 import useRedux from '../../store';
 import sagaStore from '../../store/saga';
 import { MQTT_CONNECTION_STATUS } from "../../constants";
+import { mqttPublish } from "../../actions";
 
 const Home: Component = () => {
 
@@ -12,8 +13,9 @@ const Home: Component = () => {
 
     const [
         {mqtt},
-        {}
+        {onMqttPublish}
     ] = useRedux(sagaStore,{
+        onMqttPublish: mqttPublish
     });
 
     const handleBgColor = (e: any) => {
@@ -22,7 +24,7 @@ const Home: Component = () => {
 
     const handleColorSubmit = (e: any) => {
         if(mqtt.status !== MQTT_CONNECTION_STATUS.CONNECTED) return;
-        console.log('Publish', e)
+        onMqttPublish({topic: 'lightbox/command', payload: {readCmd: 234, ...e} });
     } 
 
     return <div class="home-page" style={{

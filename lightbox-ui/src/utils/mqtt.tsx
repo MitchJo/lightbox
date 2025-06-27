@@ -44,7 +44,7 @@ export function mqttPublish(payload: any): Promise<any> {
         const { mqttPublish } = api;
         if (!mqttPublish) reject({ message: 'API method "mqttPublish" is not available' })
 
-        mqttPublish(payload).then((s: any) => resolve(s)).catch((e: any) => reject({ message: e?.message || 'Could not execute MQTT Publish' }))
+        mqttPublish(JSON.stringify(payload)).then((s: any) => resolve(s)).catch((e: any) => reject({ message: e?.message || 'Could not execute MQTT Publish' }))
 
     })
 }

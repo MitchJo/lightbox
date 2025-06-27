@@ -8,7 +8,7 @@ export const mqttDisconnect = () => ({
     type: MQTT_DISCONNECT
 })
 
-export const mqttPublish = (payload: {topic: string, data: any}) => ({
+export const mqttPublish = (payload: {topic: string, payload: any}) => ({
     type: MQTT_PUBLISH,
     payload
 })

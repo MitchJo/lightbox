@@ -18,7 +18,8 @@ const ColorWheel: Component<IColorWheel> = (props: IColorWheel) => {
         })  
 
         picker.on('input:end',(color: any)=>{
-            props.onSendColor(color.rgb)
+            const {r,g,b} = color.rgb;
+            props.onSendColor({red: r, green:g, blue:b})
         })
 
         picker.on('color:change',(color: any)=>{
