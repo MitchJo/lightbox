@@ -31,6 +31,7 @@
     "vite-plugin-solid": "^2.11.6"
   },
   "dependencies": {
+    "@jaames/iro": "^5.5.2",
     "@reduxjs/toolkit": "^2.8.2",
     "@solidjs/router": "^0.15.3",
     "redux-saga": "^1.3.0",

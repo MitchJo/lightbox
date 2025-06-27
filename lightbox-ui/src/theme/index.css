@@ -20,6 +20,8 @@
 
 
     --circle-loader-icon: url('../assets/images/loading-circle.svg');
+
+    --nav-height: 60px;
 }
 
 
@@ -40,8 +42,7 @@ header nav {
     color: white;
     box-sizing: border-box;
     padding: .5em;
-    margin-bottom: 1em;
-    height: 60px;
+    height: var(--nav-height);
 }
 
 header nav h1 {
