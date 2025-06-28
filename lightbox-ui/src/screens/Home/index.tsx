@@ -6,6 +6,7 @@ import useRedux from '../../store';
 import sagaStore from '../../store/saga';
 import { MQTT_CONNECTION_STATUS } from "../../constants";
 import { mqttPublish } from "../../actions";
+import BrightnessController from "../../components/BrightnessController";
 
 const Home: Component = () => {
 
@@ -27,10 +28,17 @@ const Home: Component = () => {
         onMqttPublish({topic: 'lightbox/command', payload: {readCmd: 234, ...e} });
     } 
 
+    const handleBrightness = (e: any) => {
+        const {target: {value}} = e;
+        if(mqtt.status !== MQTT_CONNECTION_STATUS.CONNECTED) return;
+        onMqttPublish({topic: 'lightbox/command', payload: {readCmd: 236, brightness: value} });
+    }
+
     return <div class="home-page" style={{
         'background-color': bgColor()
     }}>
         <ColorWheel onColorChange={handleBgColor} onSendColor={handleColorSubmit}/>
+        <BrightnessController onChange={handleBrightness} activeTrackColor={bgColor()} value={50}/>
     </div>
 }
 
