@@ -21,7 +21,7 @@ exports.initializeHandlers = (app) => {
 
     ipcMain.handle(mqttConstants.MqttPublish, async (event, data) => {
         try {
-            mqttHelpers.mqttPublish(data);
+            return mqttHelpers.mqttPublish(data);
         } catch (error) {
             console.error('[Main Process] Error executing Node function:', error);
             throw new Error(`Failed to execute Node function: ${error.message}`);
@@ -32,7 +32,7 @@ exports.initializeHandlers = (app) => {
     ipcMain.handle(mqttConstants.MqttDisConnect, async (event, data) => {
 
         try {
-            mqttHelpers.mqttDisconnect();
+            return mqttHelpers.mqttDisconnect();
         } catch (error) {
             console.error('[Main Process] Error executing Node function:', error);
             throw new Error(`Failed to execute Node function: ${error.message}`);

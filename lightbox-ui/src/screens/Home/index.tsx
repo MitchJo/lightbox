@@ -1,37 +1,44 @@
-import { Component, Match, Switch } from "solid-js";
+import { Component, createSignal } from "solid-js";
 
 import './style.css';
-
+import ColorWheel from "../../components/ColorWheel";
 import useRedux from '../../store';
 import sagaStore from '../../store/saga';
-import { mqttConnect, mqttDisconnect } from "../../actions";
 import { MQTT_CONNECTION_STATUS } from "../../constants";
+import { mqttPublish } from "../../actions";
+import BrightnessController from "../../components/BrightnessController";
 
 const Home: Component = () => {
 
+    const [bgColor, setBgColor] = createSignal('#f5f5f5')
+
     const [
-        { mqtt },
-        { mqttConnectC, mqttDisconnectC }
-    ] = useRedux(sagaStore, {
-        mqttConnectC: mqttConnect,
-        mqttDisconnectC: mqttDisconnect
+        {mqtt},
+        {onMqttPublish}
+    ] = useRedux(sagaStore,{
+        onMqttPublish: mqttPublish
     });
 
-    return <div>
-        <h1>Home</h1>
-        <div class="connection-container">
-            <Switch fallback={<span>Connecting...</span>}>
-                <Match when={mqtt.status === MQTT_CONNECTION_STATUS.DISCONNECTED}>
-                    <button class="primary" onClick={()=> mqttConnectC() }>Connect</button>
-                </Match>
-                <Match when={mqtt.status === MQTT_CONNECTION_STATUS.CONNECTED}>
-                    <button class="border border-primary"  onClick={()=> mqttDisconnectC() }>Disconnect</button>
-                </Match>
-                <Match when={mqtt.status === MQTT_CONNECTION_STATUS.CONNECTING}>
-                    <span>Connecting...</span>
-                </Match>
-            </Switch>
-        </div>
+    const handleBgColor = (e: any) => {
+        setBgColor(e);
+    }
+
+    const handleColorSubmit = (e: any) => {
+        if(mqtt.status !== MQTT_CONNECTION_STATUS.CONNECTED) return;
+        onMqttPublish({topic: 'lightbox/command', payload: {readCmd: 234, ...e} });
+    } 
+
+    const handleBrightness = (e: any) => {
+        const {target: {value}} = e;
+        if(mqtt.status !== MQTT_CONNECTION_STATUS.CONNECTED) return;
+        onMqttPublish({topic: 'lightbox/command', payload: {readCmd: 236, brightness: value} });
+    }
+
+    return <div class="home-page" style={{
+        'background-color': bgColor()
+    }}>
+        <ColorWheel onColorChange={handleBgColor} onSendColor={handleColorSubmit}/>
+        <BrightnessController onChange={handleBrightness} activeTrackColor={bgColor()} value={50}/>
     </div>
 }
 

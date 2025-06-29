@@ -6,6 +6,14 @@ const { getRandomId } = require('../utils/random');
 let mainWindow;
 let client;
 
+function parsePublishData(data) {
+    try{
+        return JSON.parse(data);
+    }catch(e){
+        return null;
+    }
+}
+
 exports.mqttConnect = (parameters) => {
 
     if (!parameters) throw new Error("Invalid Parameters");
@@ -54,7 +62,8 @@ exports.mqttConnect = (parameters) => {
             type: 'connection',
             data: {
                 listenerType: 'error',
-                message: err
+                message: err,
+                connected: false
             }
         });
     });
@@ -94,8 +103,11 @@ exports.mqttConnect = (parameters) => {
 }
 
 exports.mqttDisconnect = () => {
-    if (!client) return;
+    if (!client) throw new Error("Client was not initialized");
+    ;
     client.end();
+
+    return 1;
 }
 
 exports.mqttSubscribe = (topic) => {
@@ -140,11 +152,19 @@ exports.mqttUnSubscribed = (topic) => {
 }
 
 exports.mqttPublish = (data) => {
-    if (!client) return;
-    if (!data) return;
-    const { topic, payload } = data;
 
-    client.publish(topic, payload, (err) => {
+    if (!client) throw new Error("Client was not initialized");
+    if (!data) throw new Error("Data is not available");
+
+    const parsedData = parsePublishData(data);
+    if(!parsedData) throw new Error("Could not parsed data to publish.");
+
+    const { topic, payload } = parsedData;
+    
+    if(!topic) throw new Error("Could not parsed topic to publish.");
+    if(!payload) throw new Error("Could not parsed payload to publish.");
+
+    client.publish(topic, JSON.stringify(payload), (err) => {
         if (!mainWindow) return;
 
         const message = err ? `Failed to publish` : 'Successfully Published'
@@ -159,7 +179,7 @@ exports.mqttPublish = (data) => {
         });
 
     });
-
+    return 1;
 }
 
 exports.setMainWindow = (win) => {

@@ -3,3 +3,5 @@
 /out
 /certs/*
 /lightbox/node_modules
+/lightbox/dist
+sign.bat

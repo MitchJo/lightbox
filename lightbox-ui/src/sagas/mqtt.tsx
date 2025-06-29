@@ -1,13 +1,13 @@
 import { all, call, fork, put, take, takeLatest } from "redux-saga/effects";
 import { MQTT_CONNECT, MQTT_CONNECTION_STATUS, MQTT_DISCONNECT, MQTT_EVENTS, MQTT_PUBLISH } from "../constants";
-import { mqttConnect, mqttDisconnect, mqttEventsChannel } from "../utils/mqtt";
+import { mqttConnect, mqttDisconnect, mqttEventsChannel, mqttPublish } from "../utils/mqtt";
 import { mqttActions } from "../reducers/mqtt";
 
 function* startListeningMqttEvents(channel: any): Generator<any, any, any> {
     const {setMqttStatus} = mqttActions;
     while(true){
         const {type, data} = yield take (channel);
-        console.log(type, data);
+        // console.log(type, data);
 
         switch (type) {
             case 'connection':
@@ -53,7 +53,12 @@ function* callMqttDisconnect(): Generator<any, any, any>{
 }
 
 function* callMqttPublish({payload}: any): Generator<any,any,any>{
-
+    if(!payload) return;
+    try{
+        yield call(mqttPublish, payload)
+    }catch(e){
+        console.log(e)
+    }
 }
 
 function* callMqttEvents(): Generator<any,any,any>{

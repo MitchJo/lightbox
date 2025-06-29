@@ -1,6 +1,6 @@
 
 const { app, BrowserWindow } = require('electron/main')
-const isDev = true;
+const isDev = false;
 const path = require('node:path');
 const { mqttHelpers } = require('./main');
 const { initializeHandlers } = require('./handlers');
@@ -21,12 +21,12 @@ const createWindow = () => {
         // menuBarVisible: false
     })
 
-     if (isDev) {
+    if (isDev) {
         win.loadURL('http://localhost:3000'); 
         win.webContents.openDevTools();
     } else {
         // win.loadFile(path.join(__dirname, '../build/index.html'));
-        win.loadFile('src/index.html');
+        win.loadFile('src/ui/index.html');
     }
 
     
