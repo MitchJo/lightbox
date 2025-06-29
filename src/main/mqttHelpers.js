@@ -62,7 +62,8 @@ exports.mqttConnect = (parameters) => {
             type: 'connection',
             data: {
                 listenerType: 'error',
-                message: err
+                message: err,
+                connected: false
             }
         });
     });

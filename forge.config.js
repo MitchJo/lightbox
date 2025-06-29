@@ -42,51 +42,25 @@ module.exports = {
     {
       name: '@electron-forge/maker-wix', // Use WiX MSI for Windows installers
       config: {
-        name: 'Lightbox', // Internal name for the Squirrel installer
-        authors: 'Mitchell Mawniuh', // This is shown in the installer
+        name: 'Lightbox',
+        authors: 'Mitchell Mawñiuh', 
         description: 'An app to control a Lightbox.',
-        icon: path.join(__dirname, 'lightbox.ico'), // Icon for the installer itself (often the same as app icon)
+        icon: path.join(__dirname, 'lightbox.ico'), 
         version: '1.0.0',
         runAfterFinish: true,
-        // WiX MSI specific configurations
-        // See https://www.electronforge.io/config/makers/wix-msi for full options
-        language: 1033, // English (US) - you can specify other LCIDs for different languages
-        manufacturer: 'Mitchell Mawniuh', // Appears in Add/Remove Programs
+        language: 1033, 
+        manufacturer: 'Mitchell Mawñiuh',
         ui: {
-          chooseDirectory: true, // Allow user to choose installation directory
-          // Optionally, you can customize UI images
+          chooseDirectory: true, 
           images: {
             background: path.join(__dirname, 'lightbox-background.bmp'),
             banner: path.join(__dirname, 'lightbox-banner.bmp'),
           }
-        },
-        // perMachine: true, // Install for all users (requires admin)
-        // Set this to `true` if you want a per-machine (all users) installation.
-        // If `false` (default), it's a per-user installation (no admin needed, installs to AppData).
-        // It's crucial to decide which you want. Per-machine is common for corporate environments.
-        // For consumer apps, per-user might be easier for less friction.
-        //
-        // You might also need to configure code signing here if you're signing your MSI:
-
-        // windowsSign: {
-        //   // Specify only SHA256 as the digest algorithm
-        //   // This typically translates to `/fd sha256` for signtool.exe
-        //   options: {
-        //     digestAlgorithm: 'sha256',
-        //     // If you absolutely don't want /as (append signature) flag,
-        //     // though for initial signing, it's usually not the issue.
-        //     appendSignature: false, // You might try this as a last resort if nothing else works
-        //   },
-        //   // IMPORTANT: If you had `certificateFile` and `certificatePassword`
-        //   // directly under the `config` of `maker-wix`, move them here.
-        //   certificateFile: path.join(__dirname, 'certs/lightbox-cert.pfx'),
-        //   certificatePassword:  Use environment variable for security!
-        // }
+        }
 
       },
-      platforms: ['win32'] // Explicitly apply this maker to Windows
+      platforms: ['win32'] 
     },
-
     // You might have other makers here for macOS, Linux, etc.
     // {
     //   name: '@electron-forge/maker-zip',
