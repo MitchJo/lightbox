@@ -1,0 +1,1 @@
+cd "out\make\wix\x64\" & "C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x64\signtool.exe" sign /f "E:\Work\ElectronApps\lightbox\certs\lightbox-cert.pfx" /p "**LightBox@31" /fd sha256 /tr http://timestamp.digicert.com /td sha256 /v "lightbox.msi"
