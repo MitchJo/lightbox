@@ -1,6 +1,6 @@
 
 const { app, BrowserWindow } = require('electron/main')
-const isDev = false;
+const isDev = true;
 const path = require('node:path');
 const { mqttHelpers } = require('./main');
 const { initializeHandlers } = require('./handlers');

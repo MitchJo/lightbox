@@ -25,13 +25,13 @@ const Home: Component = () => {
 
     const handleColorSubmit = (e: any) => {
         if(mqtt.status !== MQTT_CONNECTION_STATUS.CONNECTED) return;
-        onMqttPublish({topic: 'lightbox/command', payload: {readCmd: 234, ...e} });
+        onMqttPublish({topic: 'lightbox/command', payload: {cmd: 234, data: {...e} } });
     } 
 
     const handleBrightness = (e: any) => {
         const {target: {value}} = e;
         if(mqtt.status !== MQTT_CONNECTION_STATUS.CONNECTED) return;
-        onMqttPublish({topic: 'lightbox/command', payload: {readCmd: 236, brightness: value} });
+        onMqttPublish({topic: 'lightbox/command', payload: {cmd: 236, data: { brightness: parseInt(value) }} });
     }
 
     return <div class="home-page" style={{
