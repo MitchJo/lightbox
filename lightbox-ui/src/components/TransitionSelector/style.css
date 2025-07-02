@@ -1,0 +1,14 @@
+.transition-container{
+    display: flex;
+    justify-content: center;
+    gap: .5em;
+    flex-direction: column;
+    background-color: var(--surface-color);
+    box-sizing: border-box;
+    padding: 1em;
+    border-radius: 10px;
+    box-shadow: 1px 0px 10px 0px rgba(1,1,1,0.2);
+}
+.transition-container h4{
+    margin: 0;
+}

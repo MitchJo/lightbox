@@ -1,26 +1,28 @@
 {
   "name": "lightbox",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A windows desktop app to control a lightbox",
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron-forge start",
     "package": "electron-forge package",
-    "make": "electron-forge make --arch=x64"
+    "clean": "rimraf out",
+    "make": "npm run clean & electron-forge make --arch=x64 && sign.bat"
   },
   "keywords": [
     "LED",
     "Lightbox",
     "IoT"
   ],
-  "author": "Mitchell Mawniuh",
+  "author": "Mitchell Mawñiuh",
   "license": "ISC",
   "devDependencies": {
     "@electron-forge/cli": "^7.8.1",
     "@electron-forge/maker-squirrel": "^7.8.1",
     "@electron-forge/maker-wix": "^7.8.1",
-    "electron": "^37.1.0"
+    "electron": "^37.1.0",
+    "rimraf": "^6.0.1"
   },
   "dependencies": {
     "mqtt": "^5.13.1"

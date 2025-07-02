@@ -7,6 +7,7 @@ import sagaStore from '../../store/saga';
 import { MQTT_CONNECTION_STATUS } from "../../constants";
 import { mqttPublish } from "../../actions";
 import BrightnessController from "../../components/BrightnessController";
+import TransitionSelector from "../../components/TransitionSelector";
 
 const Home: Component = () => {
 
@@ -25,20 +26,29 @@ const Home: Component = () => {
 
     const handleColorSubmit = (e: any) => {
         if(mqtt.status !== MQTT_CONNECTION_STATUS.CONNECTED) return;
-        onMqttPublish({topic: 'lightbox/command', payload: {readCmd: 234, ...e} });
+        onMqttPublish({topic: 'lightbox/command', payload: {cmd: 234, data: {...e} } });
     } 
 
     const handleBrightness = (e: any) => {
         const {target: {value}} = e;
         if(mqtt.status !== MQTT_CONNECTION_STATUS.CONNECTED) return;
-        onMqttPublish({topic: 'lightbox/command', payload: {readCmd: 236, brightness: value} });
+        onMqttPublish({topic: 'lightbox/command', payload: {cmd: 236, data: { brightness: parseInt(value) }} });
+    }
+
+    const handleTransition=(e: any) => {
+        const {target: {value}} = e;
+        if(mqtt.status !== MQTT_CONNECTION_STATUS.CONNECTED) return;
+        onMqttPublish({topic: 'lightbox/command', payload: {cmd: 237, data: { transitionType: parseInt(value) }} });
     }
 
     return <div class="home-page" style={{
         'background-color': bgColor()
     }}>
         <ColorWheel onColorChange={handleBgColor} onSendColor={handleColorSubmit}/>
-        <BrightnessController onChange={handleBrightness} activeTrackColor={bgColor()} value={50}/>
+        <div class="component-group">
+            <TransitionSelector onSelect={handleTransition} />
+            <BrightnessController onChange={handleBrightness} activeTrackColor={bgColor()} value={50}/>
+        </div>
     </div>
 }
 
