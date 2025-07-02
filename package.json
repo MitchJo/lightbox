@@ -1,6 +1,6 @@
 {
   "name": "lightbox",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A windows desktop app to control a lightbox",
   "main": "src/index.js",
   "scripts": {

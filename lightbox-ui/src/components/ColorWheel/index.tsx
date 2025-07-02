@@ -39,7 +39,7 @@ const ColorWheel: Component<IColorWheel> = (props: IColorWheel) => {
 
 
     return <div class="color-wheel-container" >
-        <h3>Light Colour</h3>
+        <h3>Choose Colour</h3>
         <div class="color-wheel" ref={colorPickerElement} />
     </div>
 }

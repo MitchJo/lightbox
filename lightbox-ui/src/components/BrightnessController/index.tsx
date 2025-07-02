@@ -26,7 +26,7 @@ const BrightnessController: Component<IBrightnessController> = (props: IBrightne
 
 
     return <div class="slider-wrapper">
-        <h3>Brightness</h3>
+        <h3>Set brightness</h3>
         <div class="vertical-slider-container">
             <input type="range" min="20" max="250" value={props.value} step="1" ref={slider} class="brightness-slider vertical" onChange={props.onChange} onInput={updateSliderFill} style={{
                 background: `linear-gradient(to right, ${props.activeTrackColor} var(--fill-percentage), #ccc var(--fill-percentage))`
