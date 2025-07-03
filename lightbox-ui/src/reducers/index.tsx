@@ -4,12 +4,14 @@ import ConfigurationReducer from './configurations';
 import MqttStatusReducer from './mqtt';
 import MqttLogsReducer from './mqttLogs';
 import WifiConnectionReducer from './wifiConnections';
+import WifiDevicesReducer from './wifiDevices';
 
 const reducers = combineReducers({
     configurations: ConfigurationReducer,
     mqtt: MqttStatusReducer,
     mqttLogs: MqttLogsReducer,
-    wifi: WifiConnectionReducer
+    wifi: WifiConnectionReducer,
+    wifiDevices: WifiDevicesReducer
 });
 
 export default reducers;

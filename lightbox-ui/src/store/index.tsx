@@ -14,7 +14,7 @@ export default function useRedux(store: any, actions: any) {
   
   const unsubscribe = store.subscribe(() =>{
 
-    const { configurations, mqtt, mqttLogs, wifi} = store.getState();
+    const { configurations, mqtt, mqttLogs, wifi, wifiDevices} = store.getState();
 
     setState('configurations',reconcile(configurations));
     
@@ -23,6 +23,8 @@ export default function useRedux(store: any, actions: any) {
     setState('mqttLogs',reconcile(mqttLogs,{key:'log_id'}));
 
     setState('wifi',reconcile(wifi));
+
+    setState('wifiDevices',reconcile(wifiDevices,{key: "ssid"}));
 
   });
 

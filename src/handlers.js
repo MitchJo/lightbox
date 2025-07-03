@@ -82,7 +82,6 @@ exports.initializeHandlers = (app) => {
         try{
             return await wifiConnectionHelpers.getCurrentWifi();
         }catch(e){
-            console.log(e)
             throw new Error(e.message|| 'Cannot get Wifi State');
         }
     })

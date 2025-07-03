@@ -3,8 +3,7 @@ export const WIFI_SCAN = 'WIFI_SCAN';
 export const WIFI_EVENTS = 'WIFI_EVENTS';
 export const WIFI_STATE = 'WIFI_STATE';
 
-export enum WIFI_CONNECTION_STATUS{
-    NOT_CONNECTED,
-    SCANNING,
-    CONNECTED
+export enum WIFI_SCANNING_STATUS{
+    IDLE,
+    SCANNING
 }
