@@ -1,7 +1,7 @@
 const { ipcMain } = require('electron')
 
-const {mqttConstants, fileConstants} = require("./constants");
-const { mqttHelpers, configurationFiles } = require("./main");
+const {mqttConstants, fileConstants, wifiConstants} = require("./constants");
+const { mqttHelpers, configurationFiles, wifiConnectionHelpers } = require("./main");
 const path = require('path')
 
 exports.initializeHandlers = (app) => {
@@ -58,6 +58,23 @@ exports.initializeHandlers = (app) => {
         } catch (error) {
             console.error('[Main Process] Error executing Node function:', error);
             throw new Error(`Failed to execute Node function: ${error.message}`);
+        }
+    });
+
+
+    ipcMain.handle(wifiConstants.wifiConnect, async(event, data) => {
+        try{
+
+        }catch(e){
+            throw new Error(e.message||'Cannot connect to WiFi');
+        }
+    });
+
+    ipcMain.handle(wifiConstants.wifiScan, async(event, data) => {
+        try{
+            return wifiConnectionHelpers.scanWifi();
+        }catch(e){
+            throw new Error(e.message||'Cannot scan WiFi networks');
         }
     });
 
