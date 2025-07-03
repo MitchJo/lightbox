@@ -78,4 +78,13 @@ exports.initializeHandlers = (app) => {
         }
     });
 
+    ipcMain.handle(wifiConstants.wifiState, async (event, data) => {
+        try{
+            return await wifiConnectionHelpers.getCurrentWifi();
+        }catch(e){
+            console.log(e)
+            throw new Error(e.message|| 'Cannot get Wifi State');
+        }
+    })
+
 }

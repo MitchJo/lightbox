@@ -1,4 +1,4 @@
-import { WIFI_CONNECT, WIFI_EVENTS, WIFI_SCAN } from "../constants";
+import { WIFI_CONNECT, WIFI_EVENTS, WIFI_SCAN, WIFI_STATE } from "../constants";
 
 export const wifiConnect = (payload: any) => ({
     type: WIFI_CONNECT,
@@ -12,4 +12,8 @@ export const wifiScan = () => ({
 
 export const wifiEvents = () => ({
     type: WIFI_EVENTS
+})
+
+export const getWifiState = () => ({
+    type: WIFI_STATE
 })

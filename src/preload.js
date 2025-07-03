@@ -27,4 +27,6 @@ contextBridge.exposeInMainWorld('versions', {
 
   onWifiEvents: (cb) => ipcRenderer.on('wifi-events', (_, value) => cb(JSON.stringify(value) ) ),
 
+  getWifiState: () => ipcRenderer.invoke('wifi-state',{}),
+
 })
