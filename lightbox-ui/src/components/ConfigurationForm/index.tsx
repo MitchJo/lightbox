@@ -12,7 +12,8 @@ interface IConfigurationForm {
         privateKey: string,
         rootCa: string,
         deviceCert: string
-    }
+    },
+    closeLabel?: string
 }
 
 const ConfigurationForm: Component<IConfigurationForm> = (props: IConfigurationForm) => {
@@ -108,7 +109,7 @@ const ConfigurationForm: Component<IConfigurationForm> = (props: IConfigurationF
 
             <fieldset class="row submit">
                 <input type="submit" value="Save" tabindex="7" />
-                <button type="button" tabindex="8" class="border border-primary" onClick={props.onClose}>Close</button>
+                <button type="button" tabindex="8" class="border border-primary" onClick={props.onClose}>{props?.closeLabel || 'Close'}</button>
             </fieldset>
 
         </form>

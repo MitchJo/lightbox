@@ -1,25 +1,33 @@
-import { Component, onMount, Show } from "solid-js";
+import { Component, createSignal, onMount, Show } from "solid-js";
 
 import './style.css';
 import useRedux from '../../store';
 import sagaStore from '../../store/saga';
-import { getWifiState, wifiScan, wifiConnect } from "../../actions";
+import { getWifiState, wifiScan, wifiConnect, resetWifi } from "../../actions";
 import DeviceList from "../../components/DeviceLists";
+import ConfigurationForm from "../../components/ConfigurationForm";
+import { WIFI_CONNECTION_STATUS, WIFI_SCANNING_STATUS } from "../../constants";
 
 const Provision: Component = () => {
 
     const [
         { wifi, wifiDevices },
-        { onWifiScan, onGetWifiState, onWifiConnect }
+        { onWifiScan, onGetWifiState, onWifiConnect, onWifiReset }
     ] = useRedux(sagaStore, {
         onWifiScan: wifiScan,
         onGetWifiState: getWifiState,
-        onWifiConnect: wifiConnect
+        onWifiConnect: wifiConnect,
+        onWifiReset: resetWifi
     });
 
 
     const onDeviceSelected = (e: any) => {
-        onWifiConnect({ssid: e.ssid});
+        // setConfigMode(true);
+        onWifiConnect({ ssid: e.ssid });
+    }
+
+    const onConfig = () => {
+
     }
 
     onMount(() => {
@@ -30,12 +38,31 @@ const Provision: Component = () => {
     return <div class="provision-container">
 
         <Show when={wifi.power}>
-            <div class="row">
-                <button class="border border-primary" onClick={()=> onWifiScan() }>Scan</button>
-            </div>
 
-            <DeviceList devices={wifiDevices.devices} onClick={onDeviceSelected}/>
+            <Show when={wifi.connection !== WIFI_CONNECTION_STATUS.CONNECTING && wifi.connection !== WIFI_CONNECTION_STATUS.CONNECTED}>
+                <div class="row">
+                    <button class="border border-primary" onClick={() => onWifiScan()} disabled={wifi.scan === WIFI_SCANNING_STATUS.SCANNING}>Scan</button>
+                    <button class="primary" onClick={() => onWifiReset()}>Reset Wi-Fi</button>
+                </div>
+            </Show>
 
+
+            <Show when={wifi.connection !== WIFI_CONNECTION_STATUS.CONNECTED}>
+                <DeviceList devices={wifiDevices.devices} onClick={onDeviceSelected} connection={wifi.connection} ssid={wifi.ssid} />
+            </Show>
+
+            <Show when={wifi.connection === WIFI_CONNECTION_STATUS.CONNECTED}>
+                <h3>Connected to: {wifi.ssid}</h3>
+                <ConfigurationForm onFormSubmit={() => { }} onClose={() => onWifiReset()} formValues={{
+                    protocol: 'mqtts',
+                    host: '',
+                    port: 8883,
+                    privateKey: '',
+                    rootCa: '',
+                    deviceCert: ''
+                }} closeLabel={'Disconnect'} />
+            </Show>
+            
         </Show>
 
         <Show when={!wifi.power}>

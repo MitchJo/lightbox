@@ -25,7 +25,8 @@ exports.connectToWifi = (wifiAP) => {
             type: 'wifi-connect',
             status: true,
             data: {
-                ...data
+                ...data,
+                ssid
             }
         });
 

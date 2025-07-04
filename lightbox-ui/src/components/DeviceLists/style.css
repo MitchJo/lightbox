@@ -1,0 +1,26 @@
+.device-lists{
+    display: flex;
+    padding: 1em 0;
+    box-sizing: border-box;
+    gap: 20px;
+    flex-wrap: wrap;
+    max-width: 1180px;
+    width: 90%;
+}
+
+.device-lists .device-item{
+    width: 100px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 1px 0px 10px 0px rgba(1,1,1,0.2);
+    box-sizing: border-box;
+    background-color: var(--surface-color);
+    word-break: break-word;
+}
+
+.device-lists .device-item:hover{
+    background-color: var(--accent-color);
+    color: white;
+}

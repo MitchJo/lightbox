@@ -2,6 +2,8 @@
     display: flex;
     box-sizing: border-box;
     padding: 1em;
+    flex-direction: column;
+    align-items: center;
 }
 
 .provision-container .row{

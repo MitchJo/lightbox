@@ -84,7 +84,7 @@ export function getWifiState() {
 export function wifiReset() {
 
     return new Promise((resolve, reject) => {
-        
+
         if (!window) reject({ message: 'No window object' });
 
         const api = (window as any)?.versions;

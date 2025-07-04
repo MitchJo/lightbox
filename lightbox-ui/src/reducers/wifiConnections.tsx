@@ -1,19 +1,26 @@
 import { createSlice } from "@reduxjs/toolkit"
-import { WIFI_SCANNING_STATUS } from "../constants";
+import { WIFI_CONNECTION_STATUS, WIFI_SCANNING_STATUS } from "../constants";
 
 interface WifiState {
-    connection: string,
+    connection: WIFI_CONNECTION_STATUS,
     scan: WIFI_SCANNING_STATUS,
     ssid: string,
+    mac: string,
     power: boolean
 }
 
-const initialState = { connection: "disconnected", scan: WIFI_SCANNING_STATUS.IDLE, ssid: '', power: false } satisfies WifiState as WifiState
+const initialState = { connection: WIFI_CONNECTION_STATUS.DISCONNECTED, scan: WIFI_SCANNING_STATUS.IDLE, ssid: '', power: false, mac: '' } satisfies WifiState as WifiState
 
 const WifiSlice = createSlice({
     name: "wifi",
     initialState,
     reducers: {
+
+        setWifiConnectionStatus(state, action){
+            console.log(action.payload);
+            state = {...state, ...action.payload}
+            return state;
+        },
 
         setWifiStatus(state, action) {
             state = {...state, ...action.payload};
