@@ -81,7 +81,7 @@ export function getWifiState() {
     })
 }
 
-export function wifiReset() {
+export function wifiReset(reconnectSSID?: string) {
 
     return new Promise((resolve, reject) => {
 
@@ -93,7 +93,7 @@ export function wifiReset() {
         const { onWifiReset } = api;
         if (!onWifiReset) reject({ message: 'API method "onWifiReset" is not available' })
 
-        onWifiReset().then((s: any) => resolve(s)).catch((e: any) => reject(e));
+        onWifiReset(reconnectSSID).then((s: any) => resolve(s)).catch((e: any) => reject(e));
 
     })
 

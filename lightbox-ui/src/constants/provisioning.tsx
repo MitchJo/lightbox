@@ -1,9 +1,6 @@
 export const INIT_PROVISION = 'INIT_PROVISION';
 export const PROVISION_EVENTS = 'PROVISION_EVENTS';
 
-const PROVISION_HOST = 'http://192.168.4.1'
-export const PROVISION_PATH =`${PROVISION_HOST}/save`;
-
 export enum PROVISION_STATUS {
     IDLE,
     PROVISIONING,

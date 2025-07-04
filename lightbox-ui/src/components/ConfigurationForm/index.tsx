@@ -1,4 +1,4 @@
-import { Component, createEffect, createSignal, on } from "solid-js";
+import { Component, createEffect, createSignal, on, Show } from "solid-js";
 import './style.css';
 import FormFileInput from "../FormFileInput";
 
@@ -14,7 +14,8 @@ interface IConfigurationForm {
         deviceCert: string
     },
     closeLabel?: string;
-    configFileReadTypes?: string
+    configFileReadTypes?: string;
+    provisionForm?: boolean;
 }
 
 const ConfigurationForm: Component<IConfigurationForm> = (props: IConfigurationForm) => {
@@ -31,12 +32,12 @@ const ConfigurationForm: Component<IConfigurationForm> = (props: IConfigurationF
             reader.onload = (e: any) => resolve(e.target.result);
             reader.onerror = (error) => reject(error);
 
-            if(props.configFileReadTypes === 'text') {
+            if (props.configFileReadTypes === 'text') {
                 reader.readAsText(file);
-            }else{
+            } else {
                 reader.readAsArrayBuffer(file);
             }
-            
+
         });
 
     };
@@ -113,6 +114,18 @@ const ConfigurationForm: Component<IConfigurationForm> = (props: IConfigurationF
                 <label for="">Device Cert:</label>
                 <FormFileInput fileType="application/x-x509-ca-cert, .crt" parameters={{ tabindex: 6, name: 'deviceCert' }} filePath={props.formValues.deviceCert} />
             </fieldset>
+
+            <Show when={props?.provisionForm}>
+                <fieldset class="row">
+                    <label for="">Wi-Fi SSID:</label>
+                    <input type="text" name="ssid" required placeholder="Wifi SSID" />
+                </fieldset>
+
+                <fieldset class="row">
+                    <label for="">Wi-Fi Password:</label>
+                    <input type="text" name="password" required placeholder="WiFi Password" />
+                </fieldset>
+            </Show>
 
             <fieldset class="row submit">
                 <input type="submit" value="Save" tabindex="7" />

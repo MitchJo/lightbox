@@ -94,4 +94,13 @@ exports.initializeHandlers = (app) => {
         }
     })
 
+    ipcMain.handle(wifiConstants.initiateProvision, async (event, payload) => {
+        try{
+            return await wifiConnectionHelpers.initateDeviceProvision(payload)
+        }catch(e){
+            throw new Error(e.message);
+        }
+
+    })
+
 }

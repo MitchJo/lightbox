@@ -1,18 +1,17 @@
-import { Component, createSignal, onMount, Show } from "solid-js";
+import { Component, createEffect, createSignal, on, onMount, Show } from "solid-js";
 
 import './style.css';
 import useRedux from '../../store';
 import sagaStore from '../../store/saga';
-import { getWifiState, wifiScan, wifiConnect, resetWifi } from "../../actions";
+import { getWifiState, wifiScan, wifiConnect, resetWifi, initiateProvision } from "../../actions";
 import DeviceList from "../../components/DeviceLists";
 import ConfigurationForm from "../../components/ConfigurationForm";
-import { WIFI_CONNECTION_STATUS, WIFI_SCANNING_STATUS } from "../../constants";
-import { initiateProvision } from "../../actions/provisioning";
+import { PROVISION_STATUS, WIFI_CONNECTION_STATUS, WIFI_SCANNING_STATUS } from "../../constants";
 
 const Provision: Component = () => {
 
     const [
-        { wifi, wifiDevices },
+        { wifi, wifiDevices, provision },
         { onWifiScan, onGetWifiState, onWifiConnect, onWifiReset, onInitiateProvision }
     ] = useRedux(sagaStore, {
         onWifiScan: wifiScan,
@@ -24,7 +23,6 @@ const Provision: Component = () => {
 
 
     const onDeviceSelected = (e: any) => {
-        // setConfigMode(true);
         onWifiConnect({ ssid: e.ssid });
     }
 
@@ -34,8 +32,7 @@ const Provision: Component = () => {
 
     onMount(() => {
         onGetWifiState();
-    })
-
+    });
 
     return <div class="provision-container">
 
@@ -54,17 +51,36 @@ const Provision: Component = () => {
             </Show>
 
             <Show when={wifi.connection === WIFI_CONNECTION_STATUS.CONNECTED}>
-                <h3>Connected to: {wifi.ssid}</h3>
-                <ConfigurationForm onFormSubmit={onFormSubmit} configFileReadTypes="text"  onClose={() => onWifiReset()} formValues={{
-                    protocol: 'mqtts',
-                    host: '',
-                    port: 8883,
-                    privateKey: '',
-                    rootCa: '',
-                    deviceCert: ''
-                }} closeLabel={'Disconnect'} />
+                <h3>Provisioning : {wifi.ssid}</h3>
+
+                <Show when={provision.status === PROVISION_STATUS.IDLE}>
+                    <ConfigurationForm onFormSubmit={onFormSubmit} configFileReadTypes="text" onClose={() => onWifiReset()} formValues={{
+                        protocol: 'mqtts',
+                        host: '',
+                        port: 8883,
+                        privateKey: '',
+                        rootCa: '',
+                        deviceCert: ''
+                    }} closeLabel={'Disconnect'} provisionForm={true} />
+                </Show>
+
+                <Show when={provision.status !== PROVISION_STATUS.IDLE}>
+                    <div class="loading-status" classList={{
+                        'error': provision.status === PROVISION_STATUS.PROVISION_ERROR,
+                        'success': provision.status === PROVISION_STATUS.PROVISION_SUCCESS,
+                        'ongoing': provision.status === PROVISION_STATUS.PROVISIONING,
+                    }}>
+                        <p>{provision.message}</p>
+                        <Show when={provision.status === PROVISION_STATUS.PROVISION_ERROR || provision.status === PROVISION_STATUS.PROVISION_SUCCESS}>
+                            <button class="border border-primary" onClick={() => onWifiReset()}>Provision another?</button>
+                        </Show> 
+                    </div>
+                </Show>
+
             </Show>
-            
+
+
+
         </Show>
 
         <Show when={!wifi.power}>

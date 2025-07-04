@@ -91,8 +91,50 @@ exports.resetWifi = () => {
         if (data) mainWindow.webContents.send(wifiConstants.wifiEvent, {
             type: 'wifi-reset',
             status: true,
-            data: {...data}
+            data: { ...data }
         });
 
     });
+}
+
+exports.initateDeviceProvision = (data) => {
+
+    const { host, port, privateKey, rootCa, deviceCert, ssid, password } = data;
+
+    if (!ssid) throw new ('SSID is missing.');
+    if (!password) throw new ('Password is missing.');
+
+    if (!host) throw new ('Host is missing.');
+    if (!port) throw new ('Port is missing.');
+    if (!privateKey) throw new ('Private Key is missing.');
+    if (!rootCa) throw new ('Root CA is missing.');
+    if (!deviceCert) throw new ('Device Certitifate is missing.');
+
+    return new Promise((resolve, reject) => {
+
+        const payload = new URLSearchParams();
+
+        payload.append('wifiSsid', ssid);
+        payload.append('wifiPassword', password);
+        payload.append('mqttHost', host);
+        payload.append('mqttPort', port);
+        payload.append('mqttPrivateKey', privateKey);
+        payload.append('mqttClientCert', deviceCert);
+        payload.append('mqttCaCert', rootCa);
+
+        fetch(wifiConstants.provisionUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: payload,
+        })
+            .then(response => {
+                if (response.status !== 200) reject('Could not provision')
+                return response.text();
+            })
+            .then(data => resolve(data))
+            .catch(error => reject(error.message || 'Could not provision.'));
+
+    })
 }

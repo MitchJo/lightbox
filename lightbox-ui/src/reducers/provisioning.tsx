@@ -3,9 +3,10 @@ import { PROVISION_STATUS } from "../constants";
 
 interface ProvisioningState {
     status: PROVISION_STATUS,
+    message: string
 }
 
-const initialState = { status: PROVISION_STATUS.IDLE } satisfies ProvisioningState as ProvisioningState
+const initialState = { status: PROVISION_STATUS.IDLE, message: '' } satisfies ProvisioningState as ProvisioningState
 
 const ProvisioningSlice = createSlice({
     name: "provision",

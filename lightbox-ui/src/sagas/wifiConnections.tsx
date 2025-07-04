@@ -11,7 +11,7 @@ function* handleScanComplete({data}: any) {
     const { setWifiScanning } = wifiActions;
     const { setDevices } = WifiDevicesActions;
 
-    const devices =data || [] // data?.filter((e: any) => e?.ssid.includes(DEVICE_NAME)) || []
+    const devices = data?.filter((e: any) => e?.ssid.includes(DEVICE_NAME)) || []
 
     yield put(setWifiScanning({ scan: WIFI_SCANNING_STATUS.IDLE }))
     yield put(setDevices(devices))
@@ -65,13 +65,19 @@ function* callWifiState(): Generator<any, any, any> {
 
 function* callWifiConnect({ payload }: any): Generator<any, any, any> {
     const {setWifiConnectionStatus} = wifiActions;
-    const { setProvisionStatus } = provisionActions;
+    const { resetProvisionState } = provisionActions;
     try {
 
         let newPayload = {...payload}
-        const {ssid} = newPayload;
+        const {ssid, reconnect} = newPayload;
+        
+        yield put(resetProvisionState({}))
 
-        yield put(setProvisionStatus(PROVISION_STATUS.IDLE))
+        if(reconnect) {
+            yield call(wifiReset, ssid);
+            return;
+        }
+        
         yield put(setWifiConnectionStatus({
             connection: WIFI_CONNECTION_STATUS.CONNECTING,
             ssid
@@ -88,11 +94,11 @@ function* callWifiConnect({ payload }: any): Generator<any, any, any> {
 function* callWifiScan(): Generator<any, any, any> {
     const { setWifiScanning } = wifiActions;
     const { setDevices } = WifiDevicesActions;
-    const { setProvisionStatus } = provisionActions;
+    const { resetProvisionState } = provisionActions;
 
     yield put(setWifiScanning({ scan: WIFI_SCANNING_STATUS.SCANNING }))
     yield put(setDevices([]))
-    yield put(setProvisionStatus(PROVISION_STATUS.IDLE))
+    yield put(resetProvisionState({}))
 
     try {
         yield call(wifiScan)
@@ -108,9 +114,9 @@ function* callWifiEvents(): Generator<any, any, any> {
 
 function* callResetWifi(): Generator<any,any,any>{
     const {resetWifiStatus} = wifiActions;
-    const { setProvisionStatus } = provisionActions;
+    const { resetProvisionState } = provisionActions;
     try{
-        yield put(setProvisionStatus(PROVISION_STATUS.IDLE))
+        yield put(resetProvisionState({}))
         yield put(resetWifiStatus({}))
         yield call(wifiReset);
     }catch(e){
@@ -121,7 +127,6 @@ function* callResetWifi(): Generator<any,any,any>{
 function* wifiConnectListener() {
     yield takeLatest(WIFI_CONNECT, callWifiConnect);
 }
-
 
 function* wifiScanListener() {
     yield takeLatest(WIFI_SCAN, callWifiScan);
