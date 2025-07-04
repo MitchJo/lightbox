@@ -13,13 +13,14 @@ interface IConfigurationForm {
         rootCa: string,
         deviceCert: string
     },
-    closeLabel?: string
+    closeLabel?: string;
+    configFileReadTypes?: string
 }
 
 const ConfigurationForm: Component<IConfigurationForm> = (props: IConfigurationForm) => {
 
 
-    const readFileAsArrayBuffer = (file: File) => {
+    const readFile = (file: File) => {
         return new Promise((resolve, reject) => {
 
             if (file.size > 100 * 1024 * 1024) {
@@ -29,7 +30,13 @@ const ConfigurationForm: Component<IConfigurationForm> = (props: IConfigurationF
             const reader = new FileReader();
             reader.onload = (e: any) => resolve(e.target.result);
             reader.onerror = (error) => reject(error);
-            reader.readAsArrayBuffer(file);
+
+            if(props.configFileReadTypes === 'text') {
+                reader.readAsText(file);
+            }else{
+                reader.readAsArrayBuffer(file);
+            }
+            
         });
 
     };
@@ -52,7 +59,7 @@ const ConfigurationForm: Component<IConfigurationForm> = (props: IConfigurationF
 
         try {
             const readPromises = files.map(async ({ key, file }: any) => {
-                const arrayBuffer = await readFileAsArrayBuffer(file);
+                const arrayBuffer = await readFile(file);
                 return {
                     formKey: key,
                     name: file.name,

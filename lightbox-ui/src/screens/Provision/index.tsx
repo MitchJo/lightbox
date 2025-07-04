@@ -26,8 +26,8 @@ const Provision: Component = () => {
         onWifiConnect({ ssid: e.ssid });
     }
 
-    const onConfig = () => {
-
+    const onFormSubmit = (e: any) => {
+        console.log(e)
     }
 
     onMount(() => {
@@ -53,7 +53,7 @@ const Provision: Component = () => {
 
             <Show when={wifi.connection === WIFI_CONNECTION_STATUS.CONNECTED}>
                 <h3>Connected to: {wifi.ssid}</h3>
-                <ConfigurationForm onFormSubmit={() => { }} onClose={() => onWifiReset()} formValues={{
+                <ConfigurationForm onFormSubmit={onFormSubmit} configFileReadTypes="text"  onClose={() => onWifiReset()} formValues={{
                     protocol: 'mqtts',
                     host: '',
                     port: 8883,

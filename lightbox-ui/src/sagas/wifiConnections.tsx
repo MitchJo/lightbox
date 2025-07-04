@@ -10,7 +10,7 @@ function* handleScanComplete({data}: any) {
     const { setWifiScanning } = wifiActions;
     const { setDevices } = WifiDevicesActions;
 
-    const devices = data?.filter((e: any) => e?.ssid.includes(DEVICE_NAME)) || []
+    const devices =data || [] // data?.filter((e: any) => e?.ssid.includes(DEVICE_NAME)) || []
 
     yield put(setWifiScanning({ scan: WIFI_SCANNING_STATUS.IDLE }))
     yield put(setDevices(devices))
