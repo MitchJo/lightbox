@@ -7,17 +7,19 @@ import { getWifiState, wifiScan, wifiConnect, resetWifi } from "../../actions";
 import DeviceList from "../../components/DeviceLists";
 import ConfigurationForm from "../../components/ConfigurationForm";
 import { WIFI_CONNECTION_STATUS, WIFI_SCANNING_STATUS } from "../../constants";
+import { initiateProvision } from "../../actions/provisioning";
 
 const Provision: Component = () => {
 
     const [
         { wifi, wifiDevices },
-        { onWifiScan, onGetWifiState, onWifiConnect, onWifiReset }
+        { onWifiScan, onGetWifiState, onWifiConnect, onWifiReset, onInitiateProvision }
     ] = useRedux(sagaStore, {
         onWifiScan: wifiScan,
         onGetWifiState: getWifiState,
         onWifiConnect: wifiConnect,
-        onWifiReset: resetWifi
+        onWifiReset: resetWifi,
+        onInitiateProvision: initiateProvision
     });
 
 
@@ -27,7 +29,7 @@ const Provision: Component = () => {
     }
 
     const onFormSubmit = (e: any) => {
-        console.log(e)
+        onInitiateProvision(e);
     }
 
     onMount(() => {

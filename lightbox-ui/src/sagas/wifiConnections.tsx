@@ -1,8 +1,9 @@
 import { all, call, fork, put, take, takeLatest } from "redux-saga/effects";
-import { WIFI_CONNECT, WIFI_SCANNING_STATUS, WIFI_EVENTS, WIFI_SCAN, WIFI_STATE, DEVICE_NAME, DEVICE_DEFAULT_PASSWORD, WIFI_RESET, WIFI_CONNECTION_STATUS } from "../constants";
+import { WIFI_CONNECT, WIFI_SCANNING_STATUS, WIFI_EVENTS, WIFI_SCAN, WIFI_STATE, DEVICE_NAME, DEVICE_DEFAULT_PASSWORD, WIFI_RESET, WIFI_CONNECTION_STATUS, PROVISION_STATUS } from "../constants";
 import { getWifiState, wifiConnect, wifiEventsChannel, wifiReset, wifiScan } from "../utils/wifiConnections";
 import { wifiActions } from "../reducers/wifiConnections";
 import { WifiDevicesActions } from "../reducers/wifiDevices";
+import { provisionActions } from "../reducers/provisioning";
 
 function* handleScanComplete({data}: any) {
     if(!data) return;
@@ -64,11 +65,13 @@ function* callWifiState(): Generator<any, any, any> {
 
 function* callWifiConnect({ payload }: any): Generator<any, any, any> {
     const {setWifiConnectionStatus} = wifiActions;
+    const { setProvisionStatus } = provisionActions;
     try {
 
         let newPayload = {...payload}
         const {ssid} = newPayload;
 
+        yield put(setProvisionStatus(PROVISION_STATUS.IDLE))
         yield put(setWifiConnectionStatus({
             connection: WIFI_CONNECTION_STATUS.CONNECTING,
             ssid
@@ -85,9 +88,11 @@ function* callWifiConnect({ payload }: any): Generator<any, any, any> {
 function* callWifiScan(): Generator<any, any, any> {
     const { setWifiScanning } = wifiActions;
     const { setDevices } = WifiDevicesActions;
+    const { setProvisionStatus } = provisionActions;
 
     yield put(setWifiScanning({ scan: WIFI_SCANNING_STATUS.SCANNING }))
     yield put(setDevices([]))
+    yield put(setProvisionStatus(PROVISION_STATUS.IDLE))
 
     try {
         yield call(wifiScan)
@@ -103,7 +108,9 @@ function* callWifiEvents(): Generator<any, any, any> {
 
 function* callResetWifi(): Generator<any,any,any>{
     const {resetWifiStatus} = wifiActions;
+    const { setProvisionStatus } = provisionActions;
     try{
+        yield put(setProvisionStatus(PROVISION_STATUS.IDLE))
         yield put(resetWifiStatus({}))
         yield call(wifiReset);
     }catch(e){
