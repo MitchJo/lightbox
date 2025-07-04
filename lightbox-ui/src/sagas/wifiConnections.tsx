@@ -69,14 +69,9 @@ function* callWifiConnect({ payload }: any): Generator<any, any, any> {
     try {
 
         let newPayload = {...payload}
-        const {ssid, reconnect} = newPayload;
+        const {ssid} = newPayload;
         
         yield put(resetProvisionState({}))
-
-        if(reconnect) {
-            yield call(wifiReset, ssid);
-            return;
-        }
         
         yield put(setWifiConnectionStatus({
             connection: WIFI_CONNECTION_STATUS.CONNECTING,
@@ -115,9 +110,11 @@ function* callWifiEvents(): Generator<any, any, any> {
 function* callResetWifi(): Generator<any,any,any>{
     const {resetWifiStatus} = wifiActions;
     const { resetProvisionState } = provisionActions;
+    const { resetDevices } = WifiDevicesActions;
     try{
         yield put(resetProvisionState({}))
         yield put(resetWifiStatus({}))
+        yield put(resetDevices({}))
         yield call(wifiReset);
     }catch(e){
         console.log(e);

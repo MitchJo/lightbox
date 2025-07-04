@@ -47,6 +47,7 @@ const Provision: Component = () => {
 
 
             <Show when={wifi.connection !== WIFI_CONNECTION_STATUS.CONNECTED}>
+                <span class="note">If you could not connect to the device. Close the app and RUN it AS Administrator</span>
                 <DeviceList devices={wifiDevices.devices} onClick={onDeviceSelected} connection={wifi.connection} ssid={wifi.ssid} />
             </Show>
 

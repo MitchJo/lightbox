@@ -54,7 +54,7 @@ exports.scanWifi = () => {
             mainWindow.webContents.send(wifiConstants.wifiEvent, {
                 type: 'wifi-scan',
                 status: true,
-                data: networks.filter((e) => e.ssid !== ssid)
+                data: networks?.filter((e) => e.ssid !== ssid) || []
             });
 
         }
