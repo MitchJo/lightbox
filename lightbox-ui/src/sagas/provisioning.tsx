@@ -10,7 +10,6 @@ function* callInitProvision({payload}: any): Generator<any, any, any>{
     yield put( setProvisionStatus({status: PROVISION_STATUS.PROVISIONING, message: 'Provisioning, please wait...'}) )
     try{
         const response = yield call(initiateProvision, payload)
-        console.log(response)
         yield put( setProvisionStatus({status: PROVISION_STATUS.PROVISION_SUCCESS, message: response }) )
     }catch(e){
         yield put( setProvisionStatus({status: PROVISION_STATUS.PROVISION_ERROR, message: e}) )

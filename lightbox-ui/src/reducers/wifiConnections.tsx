@@ -17,7 +17,6 @@ const WifiSlice = createSlice({
     reducers: {
 
         setWifiConnectionStatus(state, action){
-            console.log(action.payload);
             state = {...state, ...action.payload}
             return state;
         },

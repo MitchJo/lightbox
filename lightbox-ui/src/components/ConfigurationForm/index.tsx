@@ -77,8 +77,6 @@ const ConfigurationForm: Component<IConfigurationForm> = (props: IConfigurationF
                 data = { ...data, [e.formKey]: e.data }
             })
 
-            console.log('Form submission...')
-
             props.onFormSubmit(data);
 
         } catch (e) {
