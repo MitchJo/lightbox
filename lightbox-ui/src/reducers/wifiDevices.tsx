@@ -4,7 +4,7 @@ interface WifiDevicesState {
     devices: any[],
 }
 
-const initialState = { devices: [] } satisfies WifiDevicesState as WifiDevicesState
+const initialState = { devices: [] } satisfies WifiDevicesState as WifiDevicesState;
 
 const WifiDevicesSlice = createSlice({
     name: "wifiDevices",

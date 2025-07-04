@@ -9,9 +9,9 @@ wifiControl.init({
 exports.connectToWifi = (wifiAP) => {
     if (!mainWindow) throw new Error("Window Channel is not available");
 
-    const {ssid} = wifiAP;
+    const { ssid } = wifiAP;
 
-    if(!ssid) throw new Error("SSID is not empty");
+    if (!ssid) throw new Error("SSID is not empty");
 
     wifiControl.connectToAP(wifiAP, function (err, data) {
 
@@ -25,8 +25,7 @@ exports.connectToWifi = (wifiAP) => {
             type: 'wifi-connect',
             status: true,
             data: {
-                ssid: wifiAP.ssid,
-                message: data.msg
+                ...data
             }
         });
 
@@ -46,11 +45,19 @@ exports.scanWifi = () => {
             error: err
         });
 
-        if (data) mainWindow.webContents.send(wifiConstants.wifiEvent, {
-            type: 'wifi-scan',
-            status: true,
-            data
-        });
+        if (data) {
+
+            const { ssid } = wifiControl.getIfaceState();
+            const { networks } = data;
+
+            mainWindow.webContents.send(wifiConstants.wifiEvent, {
+                type: 'wifi-scan',
+                status: true,
+                data: networks.filter((e) => e.ssid !== ssid)
+            });
+
+        }
+
 
     })
 
@@ -67,4 +74,24 @@ exports.getCurrentWifi = () => {
 
 exports.setMainWindow = (mw) => {
     mainWindow = mw;
+}
+
+
+exports.resetWifi = () => {
+    if (!mainWindow) throw new Error("Window Channel is not available");
+    wifiControl.resetWiFi((err, data) => {
+
+        if (err) mainWindow.webContents.send(wifiConstants.wifiEvent, {
+            type: 'wifi-reset',
+            status: false,
+            error: err
+        });
+
+        if (data) mainWindow.webContents.send(wifiConstants.wifiEvent, {
+            type: 'wifi-reset',
+            status: true,
+            data: {...data}
+        });
+
+    });
 }

@@ -3,6 +3,9 @@ export const WIFI_SCAN = 'WIFI_SCAN';
 export const WIFI_EVENTS = 'WIFI_EVENTS';
 export const WIFI_STATE = 'WIFI_STATE';
 
+export const DEVICE_NAME = "Lightbox";
+export const DEVICE_DEFAULT_PASSWORD = "lightb0x123";
+
 export enum WIFI_SCANNING_STATUS{
     IDLE,
     SCANNING

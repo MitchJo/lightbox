@@ -1,16 +1,17 @@
 import { all, call, fork, put, take, takeLatest } from "redux-saga/effects";
-import { WIFI_CONNECT, WIFI_SCANNING_STATUS, WIFI_EVENTS, WIFI_SCAN, WIFI_STATE } from "../constants";
+import { WIFI_CONNECT, WIFI_SCANNING_STATUS, WIFI_EVENTS, WIFI_SCAN, WIFI_STATE, DEVICE_NAME, DEVICE_DEFAULT_PASSWORD } from "../constants";
 import { getWifiState, wifiConnect, wifiEventsChannel, wifiScan } from "../utils/wifiConnections";
 import { wifiActions } from "../reducers/wifiConnections";
 import { WifiDevicesActions } from "../reducers/wifiDevices";
 
 function* handleScanComplete(data: any) {
-    console.log(data);
     const { setWifiScanning } = wifiActions;
     const { setDevices } = WifiDevicesActions;
-    const { networks } = data || {};
+
+    const devices = data?.filter((e: any) => e?.ssid.includes(DEVICE_NAME)) || []
+
     yield put(setWifiScanning({ scan: WIFI_SCANNING_STATUS.IDLE }))
-    if (networks) yield put(setDevices(networks || []))
+    yield put(setDevices(devices))
 }
 
 function* startListeningWifiEvents(channel: any): Generator<any, any, any> {
@@ -19,7 +20,7 @@ function* startListeningWifiEvents(channel: any): Generator<any, any, any> {
         const event = yield take(channel);
         switch (event.type) {
             case 'wifi-connect':
-                console.log('Wifi connect')
+                console.log('Wifi connect',event)
                 break;
             case 'wifi-scan':
                 yield call(handleScanComplete, event.data || {});
@@ -48,6 +49,9 @@ function* callWifiState(): Generator<any, any, any> {
 
 function* callWifiConnect({ payload }: any): Generator<any, any, any> {
     try {
+        let newPayload = {...payload}
+        const {ssid} = newPayload;
+        if( ssid.includes(DEVICE_NAME) ) newPayload = {...newPayload, password: DEVICE_DEFAULT_PASSWORD, reconnect: false}
         yield call(wifiConnect, payload)
     } catch (e) {
         console.log(e)

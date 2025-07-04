@@ -64,7 +64,7 @@ exports.initializeHandlers = (app) => {
 
     ipcMain.handle(wifiConstants.wifiConnect, async(event, data) => {
         try{
-
+            return wifiConnectionHelpers.connectToWifi(data);
         }catch(e){
             throw new Error(e.message||'Cannot connect to WiFi');
         }
@@ -83,6 +83,14 @@ exports.initializeHandlers = (app) => {
             return await wifiConnectionHelpers.getCurrentWifi();
         }catch(e){
             throw new Error(e.message|| 'Cannot get Wifi State');
+        }
+    })
+
+    ipcMain.handle(wifiConstants.wifiReset,(event,data) => {
+        try{
+            return wifiConnectionHelpers.resetWifi();
+        }catch(e){
+            throw new Error(e.message|| 'Cannot reset Wifi');
         }
     })
 

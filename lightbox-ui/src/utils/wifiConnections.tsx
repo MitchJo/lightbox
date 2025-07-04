@@ -80,3 +80,21 @@ export function getWifiState() {
         wifiState().then((s:any) => resolve(s)).catch((e: any) => reject(e));
     })
 }
+
+export function wifiReset() {
+
+    return new Promise((resolve, reject) => {
+        
+        if (!window) reject({ message: 'No window object' });
+
+        const api = (window as any)?.versions;
+        if (!api) reject({ message: 'No API object available' })
+
+        const { onWifiReset } = api;
+        if (!onWifiReset) reject({ message: 'API method "onWifiReset" is not available' })
+
+        onWifiReset().then((s: any) => resolve(s)).catch((e: any) => reject(e));
+
+    })
+
+}

@@ -3,18 +3,24 @@ import { Component, onMount, Show } from "solid-js";
 import './style.css';
 import useRedux from '../../store';
 import sagaStore from '../../store/saga';
-import { getWifiState, wifiScan } from "../../actions";
+import { getWifiState, wifiScan, wifiConnect } from "../../actions";
 import DeviceList from "../../components/DeviceLists";
 
 const Provision: Component = () => {
 
     const [
         { wifi, wifiDevices },
-        { onWifiScan, onGetWifiState }
+        { onWifiScan, onGetWifiState, onWifiConnect }
     ] = useRedux(sagaStore, {
         onWifiScan: wifiScan,
-        onGetWifiState: getWifiState
+        onGetWifiState: getWifiState,
+        onWifiConnect: wifiConnect
     });
+
+
+    const onDeviceSelected = (e: any) => {
+        onWifiConnect({ssid: e.ssid});
+    }
 
     onMount(() => {
         onGetWifiState();
@@ -28,7 +34,8 @@ const Provision: Component = () => {
                 <button class="border border-primary" onClick={()=> onWifiScan() }>Scan</button>
             </div>
 
-            <DeviceList devices={wifiDevices.devices} onClick={(e: any)=> console.log(e)}/>
+            <DeviceList devices={wifiDevices.devices} onClick={onDeviceSelected}/>
+
         </Show>
 
         <Show when={!wifi.power}>

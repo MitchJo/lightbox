@@ -23,6 +23,8 @@ contextBridge.exposeInMainWorld('versions', {
   // wifi connection handler
   onWifiScan: () => ipcRenderer.invoke('wifi-scan',{}),
 
+  onWifiReset: () => ipcRenderer.invoke('wifi-reset', null),
+
   onWifiConnect: (data) => ipcRenderer.invoke('wifi-connect',data),
 
   onWifiEvents: (cb) => ipcRenderer.on('wifi-events', (_, value) => cb(JSON.stringify(value) ) ),
