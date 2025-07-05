@@ -4,20 +4,21 @@ import ConfigurationForm from "../components/ConfigurationForm";
 
 import useRedux from '../store';
 import sagaStore from '../store/saga';
-import { mqttConnect, mqttDisconnect, mqttEvents, readConfig, saveConfig } from "../actions";
+import { mqttConnect, mqttDisconnect, mqttEvents, readConfig, saveConfig, wifiEvents } from "../actions";
 import { onMount } from "solid-js";
 
 const App = (props: any) => {
 
     const [
         {configurations, mqtt},
-        {readConfiguration, saveConfigurations, mqttEventsListener, mqttConnectC, mqttDisconnectC}
+        {readConfiguration, saveConfigurations, mqttEventsListener, mqttConnectC, mqttDisconnectC, wifiEventListener}
     ] = useRedux(sagaStore,{
         readConfiguration: readConfig,
         saveConfigurations: saveConfig,
         mqttEventsListener: mqttEvents,
         mqttConnectC: mqttConnect,
-        mqttDisconnectC: mqttDisconnect
+        mqttDisconnectC: mqttDisconnect,
+        wifiEventListener: wifiEvents
     });
 
     let configModal: any;
@@ -46,6 +47,7 @@ const App = (props: any) => {
     onMount(() => {
         readConfiguration();
         mqttEventsListener();
+        wifiEventListener();
     })
 
 

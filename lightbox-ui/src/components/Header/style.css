@@ -1,4 +1,5 @@
-.left-buttons{
+.nav-buttons{
     display: flex;
     gap: .5em;
+    align-items: center;
 }

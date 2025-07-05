@@ -1,6 +1,6 @@
 {
   "name": "lightbox",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A windows desktop app to control a lightbox",
   "main": "src/index.js",
   "scripts": {
@@ -25,6 +25,7 @@
     "rimraf": "^6.0.1"
   },
   "dependencies": {
-    "mqtt": "^5.13.1"
+    "mqtt": "^5.13.1",
+    "wifi-control": "^2.0.1"
   }
 }

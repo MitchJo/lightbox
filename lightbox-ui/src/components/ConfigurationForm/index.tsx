@@ -1,4 +1,4 @@
-import { Component, createEffect, createSignal, on } from "solid-js";
+import { Component, createEffect, createSignal, on, Show } from "solid-js";
 import './style.css';
 import FormFileInput from "../FormFileInput";
 
@@ -12,13 +12,16 @@ interface IConfigurationForm {
         privateKey: string,
         rootCa: string,
         deviceCert: string
-    }
+    },
+    closeLabel?: string;
+    configFileReadTypes?: string;
+    provisionForm?: boolean;
 }
 
 const ConfigurationForm: Component<IConfigurationForm> = (props: IConfigurationForm) => {
 
 
-    const readFileAsArrayBuffer = (file: File) => {
+    const readFile = (file: File) => {
         return new Promise((resolve, reject) => {
 
             if (file.size > 100 * 1024 * 1024) {
@@ -28,7 +31,13 @@ const ConfigurationForm: Component<IConfigurationForm> = (props: IConfigurationF
             const reader = new FileReader();
             reader.onload = (e: any) => resolve(e.target.result);
             reader.onerror = (error) => reject(error);
-            reader.readAsArrayBuffer(file);
+
+            if (props.configFileReadTypes === 'text') {
+                reader.readAsText(file);
+            } else {
+                reader.readAsArrayBuffer(file);
+            }
+
         });
 
     };
@@ -51,7 +60,7 @@ const ConfigurationForm: Component<IConfigurationForm> = (props: IConfigurationF
 
         try {
             const readPromises = files.map(async ({ key, file }: any) => {
-                const arrayBuffer = await readFileAsArrayBuffer(file);
+                const arrayBuffer = await readFile(file);
                 return {
                     formKey: key,
                     name: file.name,
@@ -67,8 +76,6 @@ const ConfigurationForm: Component<IConfigurationForm> = (props: IConfigurationF
             processedFiles.forEach((e) => {
                 data = { ...data, [e.formKey]: e.data }
             })
-
-            console.log('Form submission...')
 
             props.onFormSubmit(data);
 
@@ -106,9 +113,21 @@ const ConfigurationForm: Component<IConfigurationForm> = (props: IConfigurationF
                 <FormFileInput fileType="application/x-x509-ca-cert, .crt" parameters={{ tabindex: 6, name: 'deviceCert' }} filePath={props.formValues.deviceCert} />
             </fieldset>
 
+            <Show when={props?.provisionForm}>
+                <fieldset class="row">
+                    <label for="">Wi-Fi SSID:</label>
+                    <input type="text" name="ssid" required placeholder="Wifi SSID" />
+                </fieldset>
+
+                <fieldset class="row">
+                    <label for="">Wi-Fi Password:</label>
+                    <input type="text" name="password" required placeholder="WiFi Password" />
+                </fieldset>
+            </Show>
+
             <fieldset class="row submit">
                 <input type="submit" value="Save" tabindex="7" />
-                <button type="button" tabindex="8" class="border border-primary" onClick={props.onClose}>Close</button>
+                <button type="button" tabindex="8" class="border border-primary" onClick={props.onClose}>{props?.closeLabel || 'Close'}</button>
             </fieldset>
 
         </form>

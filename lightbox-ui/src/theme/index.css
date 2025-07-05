@@ -20,6 +20,7 @@
 
 
     --circle-loader-icon: url('../assets/images/loading-circle.svg');
+    --home-icon: url('../assets/images/home.svg');
 
     --nav-height: 60px;
 }
@@ -49,3 +50,20 @@ header nav h1 {
     margin: 0;
 }
 
+header nav a{
+    text-decoration: none;
+    text-align: center;
+}
+
+header nav a span.icon{
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    background-size: 80%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+header nav a span.icon.home{
+    background-image: var(--home-icon);
+}

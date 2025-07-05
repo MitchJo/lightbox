@@ -2,6 +2,7 @@ import { Component, Match, Switch } from "solid-js"
 import { MQTT_CONNECTION_STATUS } from "../../constants";
 
 import './style.css'
+import { A } from "@solidjs/router";
 
 interface IHeader {
     onSettings: () => void;
@@ -14,8 +15,11 @@ interface IHeader {
 const Header: Component<IHeader> = (props: IHeader) => {
     return <header>
         <nav>
-            <h1>{props.title}</h1>
-            <div class="left-buttons">
+            <div class="nav-buttons">
+                <A href="/"><span class="icon home"/></A>
+                <h1>{props.title}</h1>
+            </div>
+            <div class="nav-buttons">
                 <Switch fallback={<button class="icon sm loading-icon" />}>
                     <Match when={props.mqttStatus === MQTT_CONNECTION_STATUS.DISCONNECTED}>
                         <button class="success" onClick={() => props.onMqttConnect()}>Connect</button>
@@ -28,6 +32,7 @@ const Header: Component<IHeader> = (props: IHeader) => {
                     </Match>
                 </Switch>
                 <button onClick={props.onSettings} class="default">Settings</button>
+                <A href="/provision">Provision</A>
             </div>
         </nav>
     </header>

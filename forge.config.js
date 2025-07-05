@@ -46,7 +46,7 @@ module.exports = {
         authors: 'Mitchell Mawñiuh', 
         description: 'An app to control a Lightbox.',
         icon: path.join(__dirname, 'lightbox.ico'), 
-        version: '1.1.0',
+        version: '1.2.0',
         runAfterFinish: true,
         language: 1033, 
         manufacturer: 'Mitchell Mawñiuh',

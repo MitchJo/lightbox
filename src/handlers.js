@@ -1,7 +1,7 @@
 const { ipcMain } = require('electron')
 
-const {mqttConstants, fileConstants} = require("./constants");
-const { mqttHelpers, configurationFiles } = require("./main");
+const {mqttConstants, fileConstants, wifiConstants} = require("./constants");
+const { mqttHelpers, configurationFiles, wifiConnectionHelpers } = require("./main");
 const path = require('path')
 
 exports.initializeHandlers = (app) => {
@@ -60,5 +60,47 @@ exports.initializeHandlers = (app) => {
             throw new Error(`Failed to execute Node function: ${error.message}`);
         }
     });
+
+
+    ipcMain.handle(wifiConstants.wifiConnect, async(event, data) => {
+        try{
+            return wifiConnectionHelpers.connectToWifi(data);
+        }catch(e){
+            throw new Error(e.message||'Cannot connect to WiFi');
+        }
+    });
+
+    ipcMain.handle(wifiConstants.wifiScan, async(event, data) => {
+        try{
+            return wifiConnectionHelpers.scanWifi();
+        }catch(e){
+            throw new Error(e.message||'Cannot scan WiFi networks');
+        }
+    });
+
+    ipcMain.handle(wifiConstants.wifiState, async (event, data) => {
+        try{
+            return await wifiConnectionHelpers.getCurrentWifi();
+        }catch(e){
+            throw new Error(e.message|| 'Cannot get Wifi State');
+        }
+    })
+
+    ipcMain.handle(wifiConstants.wifiReset,(event,data) => {
+        try{
+            return wifiConnectionHelpers.resetWifi();
+        }catch(e){
+            throw new Error(e.message|| 'Cannot reset Wifi');
+        }
+    })
+
+    ipcMain.handle(wifiConstants.initiateProvision, async (event, payload) => {
+        try{
+            return await wifiConnectionHelpers.initateDeviceProvision(payload)
+        }catch(e){
+            throw new Error(e.message);
+        }
+
+    })
 
 }
