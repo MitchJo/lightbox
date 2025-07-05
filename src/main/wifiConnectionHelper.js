@@ -3,15 +3,27 @@ const { wifiConstants } = require('../constants');
 let mainWindow;
 
 wifiControl.init({
-    debug: true
+    // debug: true
 });
 
 exports.connectToWifi = (wifiAP) => {
     if (!mainWindow) throw new Error("Window Channel is not available");
-
     const { ssid } = wifiAP;
 
     if (!ssid) throw new Error("SSID is not empty");
+
+    const { success, ssid: connectedSSID, connection } = wifiControl.getIfaceState();
+
+    if (success && connection === 'connected' && connectedSSID === ssid) {
+        mainWindow.webContents.send(wifiConstants.wifiEvent, {
+            type: 'wifi-connect',
+            status: true,
+            data: {
+                ssid
+            }
+        });
+        return 1;
+    }
 
     wifiControl.connectToAP(wifiAP, function (err, data) {
 
