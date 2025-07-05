@@ -1,4 +1,4 @@
-import { Component, createSignal } from "solid-js";
+import { Component, createSignal, Match, Switch } from "solid-js";
 
 import './style.css';
 import ColorWheel from "../../components/ColorWheel";
@@ -8,10 +8,12 @@ import { MQTT_CONNECTION_STATUS } from "../../constants";
 import { mqttPublish } from "../../actions";
 import BrightnessController from "../../components/BrightnessController";
 import TransitionSelector from "../../components/TransitionSelector";
+import BeeHiveColorChooser from "../../components/BeeHiveColorChooser";
 
 const Home: Component = () => {
 
     const [bgColor, setBgColor] = createSignal('#f5f5f5')
+    const [selectorType, setSelectorType] = createSignal('wheel');
 
     const [
         {mqtt},
@@ -44,7 +46,28 @@ const Home: Component = () => {
     return <div class="home-page" style={{
         'background-color': bgColor()
     }}>
-        <ColorWheel onColorChange={handleBgColor} onSendColor={handleColorSubmit}/>
+        <div class="color-selector">
+            <div class="chooser-actions">
+                <button classList={{
+                    'primary': selectorType() === 'wheel',
+                    'border': selectorType() !== 'wheel',
+                    'border-primary': selectorType() !== 'wheel'
+                }} onClick={() => setSelectorType('wheel') }> Wheel </button>
+                 <button classList={{
+                    'primary': selectorType() === 'honeycomb',
+                    'border': selectorType() !== 'honeycomb',
+                    'border-primary': selectorType() !== 'honeycomb'
+                }} onClick={() => setSelectorType('honeycomb') }> Honeycomb </button>
+            </div>
+            <Switch fallback={<span>Could not load a Colour Chooser.</span>}>
+                <Match when={selectorType() === 'wheel'}>
+                    <ColorWheel onColorChange={handleBgColor} onSendColor={handleColorSubmit}/>
+                </Match>
+                <Match when={selectorType() === 'honeycomb'}>
+                    <BeeHiveColorChooser onInput={handleColorSubmit} onColorSelect={handleBgColor}/>
+                </Match>
+            </Switch>
+        </div>
         <div class="component-group">
             <TransitionSelector onSelect={handleTransition} />
             <BrightnessController onChange={handleBrightness} activeTrackColor={bgColor()} value={50}/>

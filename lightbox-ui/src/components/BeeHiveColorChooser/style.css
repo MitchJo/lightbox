@@ -1,0 +1,35 @@
+.beehive-container{
+    display: flex;
+    /* justify-content: center; */
+    align-items: center;
+    width: fit-content;
+    flex-direction: column;
+    height: 400px;
+    padding: 1em;
+    background-color: var(--surface-color);
+    border-radius: 10px;
+    gap: 1em;
+    box-shadow: 1px 0px 10px 0 rgba(1,1,1,0.2);
+}
+.beehive-container h2{
+    margin-bottom: 2em;
+}
+.beehive-container .note{
+    font-size: small;
+    margin-top: 2em;
+}
+.beehive-container .honey-comb{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 320px;
+}
+.beehive-container img.colorpicker{
+  width: 234px;
+  transform-origin: center;
+  transform: scale(1.2);
+}
+
+.beehive-container area{
+    cursor: pointer;
+}
