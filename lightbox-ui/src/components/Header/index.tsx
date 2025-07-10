@@ -6,6 +6,7 @@ import { A } from "@solidjs/router";
 
 interface IHeader {
     onSettings: () => void;
+    onLogs?: () => void;
     title: string;
     mqttStatus: MQTT_CONNECTION_STATUS;
     onMqttDisconnect: () => void;
@@ -16,7 +17,7 @@ const Header: Component<IHeader> = (props: IHeader) => {
     return <header>
         <nav>
             <div class="nav-buttons">
-                <A href="/"><span class="icon home"/></A>
+                <A href="/" title="HOME"><span class="icon home"/></A>
                 <h1>{props.title}</h1>
             </div>
             <div class="nav-buttons">
@@ -32,7 +33,8 @@ const Header: Component<IHeader> = (props: IHeader) => {
                     </Match>
                 </Switch>
                 <button onClick={props.onSettings} class="default">Settings</button>
-                <A href="/provision">Provision</A>
+                <button onClick={props?.onLogs} class="default">Logs</button>
+                <A href="/provision" class="provision-btn">Provision</A>
             </div>
         </nav>
     </header>

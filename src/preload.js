@@ -31,6 +31,8 @@ contextBridge.exposeInMainWorld('versions', {
 
   getWifiState: () => ipcRenderer.invoke('wifi-state',{}),
 
-  onProvisionInit: (data) => ipcRenderer.invoke('provision-init',data)
+  onProvisionInit: (data) => ipcRenderer.invoke('provision-init',data),
+
+  readLogFile: () => ipcRenderer.invoke('logs-read', null),
 
 })

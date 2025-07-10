@@ -4,24 +4,27 @@ import ConfigurationForm from "../components/ConfigurationForm";
 
 import useRedux from '../store';
 import sagaStore from '../store/saga';
-import { mqttConnect, mqttDisconnect, mqttEvents, readConfig, saveConfig, wifiEvents } from "../actions";
+import { mqttConnect, mqttDisconnect, mqttEvents, readConfig, readLogs, saveConfig, wifiEvents } from "../actions";
 import { onMount } from "solid-js";
+import LogsContainer from "../components/LogsContainer";
 
 const App = (props: any) => {
 
     const [
-        {configurations, mqtt},
-        {readConfiguration, saveConfigurations, mqttEventsListener, mqttConnectC, mqttDisconnectC, wifiEventListener}
-    ] = useRedux(sagaStore,{
+        { configurations, mqtt, logs },
+        { readConfiguration, saveConfigurations, mqttEventsListener, mqttConnectC, mqttDisconnectC, wifiEventListener, onReadLogs }
+    ] = useRedux(sagaStore, {
         readConfiguration: readConfig,
         saveConfigurations: saveConfig,
         mqttEventsListener: mqttEvents,
         mqttConnectC: mqttConnect,
         mqttDisconnectC: mqttDisconnect,
-        wifiEventListener: wifiEvents
+        wifiEventListener: wifiEvents,
+        onReadLogs: readLogs
     });
 
     let configModal: any;
+    let logModal: any;
 
     const handleConfigFormClose = () => {
         setTimeout(() => {
@@ -35,13 +38,26 @@ const App = (props: any) => {
     }
 
     const showConfiguration = () => {
-        if(!configModal) return;
+        if (!configModal) return;
         const isOpen = configModal?.getAttribute('open');
-        if(isOpen) {
+        if (isOpen) {
             handleConfigFormClose();
-        }else{
+        } else {
             configModal?.showModal();
         }
+    }
+
+    const onLogs = () => {
+        if (!logModal) return;
+        const isOpen = logModal?.getAttribute('open');
+        
+        if (isOpen) {
+            handleConfigFormClose();
+        } else {
+            logModal?.showModal();
+            onReadLogs();
+        }
+
     }
 
     onMount(() => {
@@ -52,9 +68,12 @@ const App = (props: any) => {
 
 
     return <>
-        <Header title="Control your LightBox" onSettings={showConfiguration} mqttStatus={mqtt.status} onMqttConnect={mqttConnectC} onMqttDisconnect={mqttDisconnectC}/>
+        <Header title="Control your LightBox" onSettings={showConfiguration} onLogs={onLogs} mqttStatus={mqtt.status} onMqttConnect={mqttConnectC} onMqttDisconnect={mqttDisconnectC} />
         <Modal ref={configModal}>
-            <ConfigurationForm onClose={handleConfigFormClose} onFormSubmit={handleConfigFormSubmit} formValues={configurations}/>
+            <ConfigurationForm onClose={handleConfigFormClose} onFormSubmit={handleConfigFormSubmit} formValues={configurations} />
+        </Modal>
+        <Modal ref={logModal}>
+            <LogsContainer logs={logs?.value || ''} onClose={() => logModal?.close('cancelled')} onRefresh={() => onReadLogs() }/>
         </Modal>
         {props.children}
     </>

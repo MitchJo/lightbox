@@ -11,8 +11,8 @@ if (process.platform === 'win32') {
 
 const createWindow = () => {
     let win = new BrowserWindow({
-        width: 800,
-        height: 600,
+        width: 1024,
+        height: 768,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js')
         },
