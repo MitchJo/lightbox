@@ -1,6 +1,6 @@
 
 const { app, BrowserWindow } = require('electron/main')
-const isDev = false;
+const isDev = true;
 const path = require('node:path');
 const { mqttHelpers, wifiConnectionHelpers } = require('./main');
 const { initializeHandlers } = require('./handlers');
@@ -11,8 +11,8 @@ if (process.platform === 'win32') {
 
 const createWindow = () => {
     let win = new BrowserWindow({
-        width: 800,
-        height: 600,
+        width: 1024,
+        height: 768,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js')
         },

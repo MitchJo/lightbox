@@ -1,12 +1,14 @@
 const { ipcMain } = require('electron')
 
-const {mqttConstants, fileConstants, wifiConstants} = require("./constants");
-const { mqttHelpers, configurationFiles, wifiConnectionHelpers } = require("./main");
+const {mqttConstants, fileConstants, wifiConstants, logsConstants} = require("./constants");
+const { mqttHelpers, configurationFiles, wifiConnectionHelpers, fileLogger } = require("./main");
 const path = require('path')
 
 exports.initializeHandlers = (app) => {
     const appDataPath = app.getPath('userData');
     const appFilesDir = path.join(appDataPath, 'app_files');
+
+    fileLogger.setLogDir(appFilesDir);
 
     ipcMain.handle(mqttConstants.MqttConnect, async (event, data) => {
         const params = await configurationFiles.getConfigurations(appFilesDir);
@@ -97,6 +99,16 @@ exports.initializeHandlers = (app) => {
     ipcMain.handle(wifiConstants.initiateProvision, async (event, payload) => {
         try{
             return await wifiConnectionHelpers.initateDeviceProvision(payload)
+        }catch(e){
+            throw new Error(e.message);
+        }
+
+    })
+
+
+    ipcMain.handle(logsConstants.readLogs, async (event, payload) => {
+        try{
+            return fileLogger.readLogs(appFilesDir, payload)
         }catch(e){
             throw new Error(e.message);
         }
