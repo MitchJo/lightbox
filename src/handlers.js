@@ -15,7 +15,6 @@ exports.initializeHandlers = (app) => {
         try {
             return mqttHelpers.mqttConnect(params);
         } catch (error) {
-            console.error('[Main Process] Error executing Node function:', error);
             throw new Error(`Failed to execute Node function: ${error.message}`);
         }
 
@@ -25,7 +24,6 @@ exports.initializeHandlers = (app) => {
         try {
             return mqttHelpers.mqttPublish(data);
         } catch (error) {
-            console.error('[Main Process] Error executing Node function:', error);
             throw new Error(`Failed to execute Node function: ${error.message}`);
         }
 
@@ -36,7 +34,6 @@ exports.initializeHandlers = (app) => {
         try {
             return mqttHelpers.mqttDisconnect();
         } catch (error) {
-            console.error('[Main Process] Error executing Node function:', error);
             throw new Error(`Failed to execute Node function: ${error.message}`);
         }
 
@@ -48,7 +45,6 @@ exports.initializeHandlers = (app) => {
         try {
             return configurationFiles.setConfigurations(appFilesDir, params);
         } catch (error) {
-            console.error('[Main Process] Error executing Node function:', error);
             throw new Error(`Failed to execute Node function: ${error.message}`);
         }
 
@@ -58,7 +54,6 @@ exports.initializeHandlers = (app) => {
         try {
             return configurationFiles.getConfigurations(appFilesDir);
         } catch (error) {
-            console.error('[Main Process] Error executing Node function:', error);
             throw new Error(`Failed to execute Node function: ${error.message}`);
         }
     });

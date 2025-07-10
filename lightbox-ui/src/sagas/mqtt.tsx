@@ -40,6 +40,7 @@ function* callMqttConnect(): Generator<any, any, any>{
     try{
        yield call(mqttConnect)
     }catch(e){
+        yield put( setMqttStatus(MQTT_CONNECTION_STATUS.DISCONNECTED) )
         console.log(e)
     }
 }

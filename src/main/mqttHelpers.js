@@ -34,14 +34,16 @@ exports.mqttConnect = (parameters) => {
 
     client = mqtt.connect(options);
 
+    writeLogs('logs.txt', generateLogData('MQTT CONNECT', `Establishing connection to: ${options.host}:${options.port}`) )
+
     client.on('connect', () => {
         
         if (!mainWindow) {
             writeLogs('logs.txt', generateLogData('MQTT On Connect','Could not find mainWindow') )
-            return
+            throw new Error("Main window channel not available");
         };
 
-        writeLogs('logs.txt', generateLogData('MQTT On Connect', `Establishing connection to: ${options.host}:${options.port}`) )
+        writeLogs('logs.txt', generateLogData('MQTT On Connect', `Connection established`) )
 
 
         mainWindow.webContents.send(mqttConstants.MqttStatus, {
