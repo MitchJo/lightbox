@@ -108,7 +108,7 @@ exports.initializeHandlers = (app) => {
 
     ipcMain.handle(logsConstants.readLogs, async (event, payload) => {
         try{
-            return fileLogger.readLogs(appFilesDir, payload)
+            return fileLogger.readLogs(appFilesDir, 'logs.txt')
         }catch(e){
             throw new Error(e.message);
         }

@@ -1,5 +1,14 @@
-.nav-buttons{
+.nav-buttons {
     display: flex;
     gap: .5em;
     align-items: center;
+}
+
+.nav-buttons .provision-btn {
+    background-color: transparent;
+    color: white;
+    border: 1px solid white;
+    border-radius: 4px;
+    padding: 6px 12px;
+    box-sizing: border-box;
 }

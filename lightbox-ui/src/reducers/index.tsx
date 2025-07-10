@@ -6,6 +6,7 @@ import MqttLogsReducer from './mqttLogs';
 import WifiConnectionReducer from './wifiConnections';
 import WifiDevicesReducer from './wifiDevices';
 import ProvisioningReducer from './provisioning';
+import LogsReducer from './logs';
 
 const reducers = combineReducers({
     configurations: ConfigurationReducer,
@@ -13,7 +14,8 @@ const reducers = combineReducers({
     mqttLogs: MqttLogsReducer,
     wifi: WifiConnectionReducer,
     wifiDevices: WifiDevicesReducer,
-    provision: ProvisioningReducer
+    provision: ProvisioningReducer,
+    logs: LogsReducer
 });
 
 export default reducers;

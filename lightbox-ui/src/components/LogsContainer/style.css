@@ -1,0 +1,27 @@
+.log-container{
+    background-color: var(--surface-color);
+    color: var(--text-color);
+    margin: 0 auto;
+    margin-top: 25px;
+    height: 90vh;
+    max-height: 90vh;
+    overflow: scroll;
+    padding: 1em;
+    box-sizing: border-box;
+}
+
+.log-container .actions{
+    position: fixed;
+    top: 0;
+    left: 50%;
+    translate: -50% 0;
+    display: flex;
+    gap: .5em;
+    justify-content: end;
+    align-items: center;
+    width: fit-content;
+    background-color: var(--surface-color);
+    padding: .5em;
+    border-radius: 6px;
+    box-sizing: border-box;
+}

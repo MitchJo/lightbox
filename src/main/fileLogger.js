@@ -18,15 +18,15 @@ exports.writeLogs = (fileName, contents) => {
     }
 }
 
-exports.readLogs = (fileName) => {
+exports.readLogs = (appDir, fileName) => {
     if (!fileName.length) return;
 
     const directoryPath = path.join(appDir, 'app_logs');
     const filepath = path.join(directoryPath, fileName);
 
     try {
-        const fileContents = fs.readFileSync(filepath, { encoding: 'utf-8' })
-        return fileContents.toString();
+        const fileContents = fs.readFileSync(filepath)
+        return fileContents;
     } catch (e) {
         return '';
     }

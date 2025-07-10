@@ -4,12 +4,14 @@ import ConfigurationSaga from './configurations';
 import MqttSaga from './mqtt';
 import WiFiConnectionSaga from './wifiConnections';
 import ProvisionSaga from './provisioning';
+import LogsSaga from './logs'
 
 export default function* rootSaga() {
   yield all([
     ConfigurationSaga(),
     MqttSaga(),
     WiFiConnectionSaga(),
-    ProvisionSaga()
+    ProvisionSaga(),
+    LogsSaga()
   ]);
 }
