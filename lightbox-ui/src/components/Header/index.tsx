@@ -35,6 +35,7 @@ const Header: Component<IHeader> = (props: IHeader) => {
                 <button onClick={props.onSettings} class="default">Settings</button>
                 <button onClick={props?.onLogs} class="default">Logs</button>
                 <A href="/provision" class="provision-btn">Provision</A>
+                <A href="/ble" class="provision-btn">BLE</A>
             </div>
         </nav>
     </header>

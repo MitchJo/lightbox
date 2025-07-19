@@ -33,6 +33,24 @@ contextBridge.exposeInMainWorld('versions', {
 
   onProvisionInit: (data) => ipcRenderer.invoke('provision-init',data),
 
+
   readLogFile: () => ipcRenderer.invoke('logs-read', null),
+
+
+  // ble connection handler
+
+  bleStartScan: () => ipcRenderer.invoke('ble-start-scan', null),
+  
+  bleStopScan: () => ipcRenderer.invoke('ble-stop-scan', null),
+
+  bleConnect: (id) => ipcRenderer.invoke('ble-connect', id),
+
+  bleDisconnect: () => ipcRenderer.invoke('ble-disconnect', null),
+
+  bleSubscribe: (data) => ipcRenderer.invoke('ble-subscribe', data),
+
+  bleUnsubscribe: (data) => ipcRenderer.invoke('ble-unsubscribe', data),
+
+  onBleEvents: (cb) => ipcRenderer.on('ble-events', (_, value) =>  cb(JSON.stringify(value) ) ),
 
 })

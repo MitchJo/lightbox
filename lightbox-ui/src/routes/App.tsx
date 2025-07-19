@@ -7,12 +7,13 @@ import sagaStore from '../store/saga';
 import { mqttConnect, mqttDisconnect, mqttEvents, readConfig, readLogs, saveConfig, wifiEvents } from "../actions";
 import { onMount } from "solid-js";
 import LogsContainer from "../components/LogsContainer";
+import { listenToBleEvents } from "../actions/ble";
 
 const App = (props: any) => {
 
     const [
         { configurations, mqtt, logs },
-        { readConfiguration, saveConfigurations, mqttEventsListener, mqttConnectC, mqttDisconnectC, wifiEventListener, onReadLogs }
+        { readConfiguration, saveConfigurations, mqttEventsListener, mqttConnectC, mqttDisconnectC, wifiEventListener, onReadLogs, onListenToBleEvents }
     ] = useRedux(sagaStore, {
         readConfiguration: readConfig,
         saveConfigurations: saveConfig,
@@ -20,7 +21,8 @@ const App = (props: any) => {
         mqttConnectC: mqttConnect,
         mqttDisconnectC: mqttDisconnect,
         wifiEventListener: wifiEvents,
-        onReadLogs: readLogs
+        onReadLogs: readLogs,
+        onListenToBleEvents: listenToBleEvents
     });
 
     let configModal: any;
@@ -64,11 +66,12 @@ const App = (props: any) => {
         readConfiguration();
         mqttEventsListener();
         wifiEventListener();
+        onListenToBleEvents();
     })
 
 
     return <>
-        <Header title="Control your LightBox" onSettings={showConfiguration} onLogs={onLogs} mqttStatus={mqtt.status} onMqttConnect={mqttConnectC} onMqttDisconnect={mqttDisconnectC} />
+        <Header title="Control your LightBox" onSettings={showConfiguration} onLogs={onLogs} mqttStatus={mqtt.status} onMqttConnect={mqttConnectC} onMqttDisconnect={mqttDisconnectC}/>
         <Modal ref={configModal}>
             <ConfigurationForm onClose={handleConfigFormClose} onFormSubmit={handleConfigFormSubmit} formValues={configurations} />
         </Modal>

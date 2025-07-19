@@ -7,6 +7,8 @@ import WifiConnectionReducer from './wifiConnections';
 import WifiDevicesReducer from './wifiDevices';
 import ProvisioningReducer from './provisioning';
 import LogsReducer from './logs';
+import BleReducer from './bleConnection';
+import BleDevicesReducer from './bleDevices';
 
 const reducers = combineReducers({
     configurations: ConfigurationReducer,
@@ -15,7 +17,9 @@ const reducers = combineReducers({
     wifi: WifiConnectionReducer,
     wifiDevices: WifiDevicesReducer,
     provision: ProvisioningReducer,
-    logs: LogsReducer
+    logs: LogsReducer,
+    ble: BleReducer,
+    bleDevices: BleDevicesReducer
 });
 
 export default reducers;

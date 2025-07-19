@@ -25,6 +25,7 @@
     "rimraf": "^6.0.1"
   },
   "dependencies": {
+    "@stoprocent/noble": "^2.3.4",
     "mqtt": "^5.13.1",
     "wifi-control": "^2.0.1"
   }
