@@ -161,5 +161,13 @@ exports.initializeHandlers = (app) => {
         }
     })
 
+    ipcMain.handle(bleConstants.BLEWrite, async (event, payload) => {
+        try {
+            return bleHelpers.bleWrite(payload);
+        } catch (e) {
+            throw new Error(e.message);
+        }
+    })
+
 
 }

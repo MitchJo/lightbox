@@ -8,6 +8,8 @@ export const BLE_UNSUBSCRIBE = "BLE_UNSUBSCRIBE";
 
 export const BLE_EVENTS = "BLE_EVENTS";
 
+export const BLE_WRITE = "BLE_WRITE";
+
 export enum BLE_SCANNING_STATUS{
     IDLE,
     SCANNING

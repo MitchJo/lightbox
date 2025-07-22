@@ -53,4 +53,6 @@ contextBridge.exposeInMainWorld('versions', {
 
   onBleEvents: (cb) => ipcRenderer.on('ble-events', (_, value) =>  cb(JSON.stringify(value) ) ),
 
+  bleWrite: (data) => ipcRenderer.invoke('ble-write', data),
+
 })

@@ -8,10 +8,10 @@ let ConnectedDevice;
 let mainWindow;
 
 function bufferToUintArray(buf) {
-    console.log(typeof(buf))
-    try{
-        return buf.toString(); 
-    }catch(e){
+    console.log(typeof (buf))
+    try {
+        return buf.toString();
+    } catch (e) {
         console.log(e)
         return buf;
     }
@@ -311,6 +311,45 @@ exports.bleUnsubscribe = async (data) => {
         throw new Error(e?.message || 'Cannot unsubscribe');
     }
 
+}
+
+exports.bleWrite = async (data) => {
+    const {writeData} = data;
+    
+    if(!writeData) {
+        writeLogs('logs.txt', generateLogData('BLE Write', 'No data to write'))
+        throw new Error('No data to write.')
+    }
+
+    if (!mainWindow) {
+        writeLogs('logs.txt', generateLogData('BLE Write', 'Could not find mainWindow'))
+        throw new Error('Main window not available...')
+    }
+
+    if (!ConnectedDevice) throw new Error("Device not available");
+
+    const characteristic = await getCharacteristic(ConnectedDevice, data);
+
+    if (!characteristic) throw new Error("No such characteristic is available: " + JSON.stringify(data));
+
+    if (!characteristic.properties.includes('write')) throw new Error("Cannot write to: " + JSON.stringify(data));
+
+    try {
+
+        characteristic.on('write', (error) => {
+            if(error){
+                writeLogs('logs.txt', generateLogData('BLE Write', `Error: ${error}`))
+                return;
+            }
+            writeLogs('logs.txt', generateLogData('BLE Write', `Written successfully`))
+        });
+
+        await characteristic.writeAsync( Buffer.from(writeData,'utf-8') , false);
+
+    } catch (e) {
+        writeLogs('logs.txt', generateLogData('BLE Write', `Error: ${e?.message}`))
+        throw new Error(e?.message || 'cannot write');
+    }
 }
 
 exports.bleCleanUp = async () => {

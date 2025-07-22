@@ -86,6 +86,21 @@ export function bleUnsubscribe(data: any) {
     });
 }
 
+export function bleWrite(data: any) {
+    return new Promise((resolve, reject) => {
+        if (!window) reject({ message: 'No window object' });
+
+        const api = (window as any)?.versions;
+        if (!api) reject({ message: 'No API object available' })
+
+        const { bleWrite: bleWriteCharacteristic } = api;
+        if (!bleWriteCharacteristic) reject({ message: 'API method "bleWrite" is not available' })
+
+        bleWriteCharacteristic(data).then((s: any)=> resolve(s) ).catch((e: any) => reject(e));
+    });
+}
+
+
 export function bleEventsChannel() {
     if (!window) return;
 

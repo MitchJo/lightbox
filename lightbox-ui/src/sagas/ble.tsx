@@ -1,6 +1,6 @@
 import { all, call, fork, put, take, takeLatest } from "redux-saga/effects";
-import { BLE_CONNECT, BLE_CONNECTION_STATUS, BLE_DISCONNECT, BLE_EVENTS, BLE_SCANNING_STATUS, BLE_START_SCAN, BLE_STOP_SCAN, BLE_SUBSCRIBE, BLE_SUBSCRIPTION_STATUS, BLE_UNSUBSCRIBE } from "../constants";
-import { bleConnect, bleDisconnect, bleEventsChannel, bleStartScan, bleStopScan, bleSubscribe, bleUnsubscribe } from "../utils/ble";
+import { BLE_CONNECT, BLE_CONNECTION_STATUS, BLE_DISCONNECT, BLE_EVENTS, BLE_SCANNING_STATUS, BLE_START_SCAN, BLE_STOP_SCAN, BLE_SUBSCRIBE, BLE_SUBSCRIPTION_STATUS, BLE_UNSUBSCRIBE, BLE_WRITE } from "../constants";
+import { bleConnect, bleDisconnect, bleEventsChannel, bleStartScan, bleStopScan, bleSubscribe, bleUnsubscribe, bleWrite } from "../utils/ble";
 import { bleActions } from "../reducers/bleConnection";
 import { bleDevicesActions } from "../reducers/bleDevices";
 
@@ -104,6 +104,18 @@ function* callUnsubscribe({ data }: any): Generator<any, any, any> {
 
 }
 
+function* callBleWrite({ data }: any): Generator<any, any, any> {
+    
+    try {
+        const response = yield call(bleWrite, data);
+        console.log(response);
+    } catch (e) {
+        console.log(e)
+    }
+
+}
+
+
 function* callStartScan(): Generator<any, any, any> {
     const { resetBleStatus, setBleScanning } = bleActions;
     const { resetDevices } = bleDevicesActions;
@@ -164,6 +176,10 @@ function* bleUnsubscribeListener() {
     yield takeLatest(BLE_UNSUBSCRIBE, callUnsubscribe)
 }
 
+function* bleWriteListener(){
+    yield takeLatest(BLE_WRITE, callBleWrite)
+}
+
 function* bleEventsListener() {
     yield takeLatest(BLE_EVENTS, callBleEvents);
 }
@@ -176,6 +192,7 @@ export default function* rootSaga() {
         fork(bleConnectListener),
         fork(bleDisconnectListener),
         fork(bleSubscribeListener),
-        fork(bleUnsubscribeListener)
+        fork(bleUnsubscribeListener),
+        fork(bleWriteListener)
     ]);
 }

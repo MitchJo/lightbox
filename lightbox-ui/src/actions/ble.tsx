@@ -1,4 +1,4 @@
-import { BLE_CONNECT, BLE_DISCONNECT, BLE_EVENTS, BLE_START_SCAN, BLE_STOP_SCAN, BLE_SUBSCRIBE, BLE_UNSUBSCRIBE } from "../constants";
+import { BLE_CONNECT, BLE_DISCONNECT, BLE_EVENTS, BLE_START_SCAN, BLE_STOP_SCAN, BLE_SUBSCRIBE, BLE_UNSUBSCRIBE, BLE_WRITE } from "../constants";
 
 export const bleStartScan = () => ({
     type: BLE_START_SCAN
@@ -28,5 +28,10 @@ export const bleSubscribeToCharacteristic = (data: {service: string, characteris
 
 export const bleUnsubscribeFromCharacteristic = (data: {service: string, characteristic: string}) => ({
     type: BLE_UNSUBSCRIBE,
+    data
+})
+
+export const bleWriteCharacteristic = (data: any) => ({
+    type: BLE_WRITE,
     data
 })
