@@ -11,8 +11,8 @@ export const BLE_EVENTS = "BLE_EVENTS";
 export const BLE_WRITE = "BLE_WRITE";
 
 export const BLE_WRITABLE_CHARACTERISTIC = {
-    serviceUUID: '00ff',
-    characteristicUUID: 'ff01'
+    service: '00ff',
+    characteristic: 'ff01'
 }
 
 export enum BLE_SCANNING_STATUS{

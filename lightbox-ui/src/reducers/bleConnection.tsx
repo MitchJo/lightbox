@@ -35,7 +35,6 @@ const BleSlice = createSlice({
         },
 
         setServiceCharacteristics(state, action) {
-            console.log(action.payload)
             state = { ...state, ...action.payload }
             return state;
         },

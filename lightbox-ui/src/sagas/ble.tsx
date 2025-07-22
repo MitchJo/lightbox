@@ -30,7 +30,6 @@ function* handleBLEServicesCharacteristics(data: any) {
 
 function* handleWriteStatus(data: any){
     const { setWriteStatus }= bleActions;
-    console.log(data);
     yield put( setWriteStatus({writeStatus: BLE_WRITE_STATUS.IDLE }) )
 }
 
@@ -74,8 +73,7 @@ function* callDeviceConnect({ id }: any): Generator<any, any, any> {
     yield put(setBleConnectionStatus({ connection: BLE_CONNECTION_STATUS.CONNECTING }))
 
     try {
-        const response = yield call(bleConnect, id);
-        console.log(response);
+        yield call(bleConnect, id);
     } catch (e) {
         console.log(e);
         yield put(setBleConnectionStatus({ connection: BLE_CONNECTION_STATUS.DISCONNECTED }))
@@ -84,8 +82,7 @@ function* callDeviceConnect({ id }: any): Generator<any, any, any> {
 
 function* callDeviceDisconnect(): Generator<any, any, any> {
     try {
-        const response = yield call(bleDisconnect);
-        console.log(response);
+        yield call(bleDisconnect);
     } catch (e) {
         console.log(e)
     }
@@ -112,8 +109,7 @@ function* callUnsubscribe({ data }: any): Generator<any, any, any> {
     
     try {
         yield put(setSubscriptionStatus({ subscriptionStatus: BLE_SUBSCRIPTION_STATUS.NOT_SUBSCRIBED }))
-        const response = yield call(bleUnsubscribe, data);
-        console.log(response);
+        yield call(bleUnsubscribe, data);
     } catch (e) {
         console.log(e)
     }
@@ -124,8 +120,7 @@ function* callBleWrite({ data }: any): Generator<any, any, any> {
     const { setWriteStatus } = bleActions;
     yield put( setWriteStatus( {writeStatus: BLE_WRITE_STATUS.WRITING} ) )
     try {
-        const response = yield call(bleWrite, data);
-        console.log(response);
+        yield call(bleWrite, data);
     } catch (e) {
         console.log(e)
         yield put( setWriteStatus(BLE_WRITE_STATUS.IDLE) )
@@ -143,8 +138,7 @@ function* callStartScan(): Generator<any, any, any> {
 
     try {
         yield put(setBleScanning({ scan: BLE_SCANNING_STATUS.SCANNING }))
-        const response = yield call(bleStartScan);
-        console.log(response);
+        yield call(bleStartScan);
     } catch (e) {
         yield put(setBleScanning({ scan: BLE_SCANNING_STATUS.IDLE }))
         console.log(e)
@@ -157,8 +151,7 @@ function* callStopScan(): Generator<any, any, any> {
 
     try {
         yield put(setBleScanning({ scan: BLE_SCANNING_STATUS.IDLE }))
-        const response = yield call(bleStopScan);
-        console.log(response);
+        yield call(bleStopScan);
     } catch (e) {
         console.log(e)
     }
