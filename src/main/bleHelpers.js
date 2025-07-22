@@ -55,13 +55,14 @@ async function disconnectDevice() {
     if (!ConnectedDevice) return;
     try {
         await ConnectedDevice.disconnectAsync();
+        BLEDevices.clear();
+        ConnectedDevice = undefined;
     } catch (e) {
         throw new Error(e.message || 'Cannot disconnect');
     }
 }
 
 async function exploreServices(peripheral) {
-    // Discover all services and characteristics at once
     const { services } = await peripheral.discoverAllServicesAndCharacteristicsAsync();
 
     const results = [];
@@ -77,27 +78,6 @@ async function exploreServices(peripheral) {
                 uuid: characteristic.uuid,
                 properties: characteristic.properties
             };
-
-            // Read the characteristic if it's readable
-            // if (characteristic.properties.includes('notify')) {
-
-            //     console.log('Notify characteristics', service.uuid, characteristic.uuid);
-
-            //     characteristic.on('data', (data, isNotification) => {
-
-            //         console.log(`Received ${isNotification ? 'notification' : 'read response'}: ${data}`);
-
-            //         if (isNotification) mainWindow.webContents.send(bleConstants.BLEEvents, {
-            //             type: 'ble-notification',
-            //             data
-            //         });
-
-            //     });
-
-            //     // await characteristic.subscribeAsync();
-
-
-            // }
 
             serviceInfo.characteristics.push(characteristicInfo);
         }
@@ -179,14 +159,13 @@ exports.bleConnect = async (peripheralId) => {
 
 
     try {
-        await noble.stopScanningAsync();
 
         const peripheral = BLEDevices.get(peripheralId);
         if (!peripheral) throw new Error(`No such Device ${peripheralId}`);
 
         BLEDevices.clear();
 
-        peripheral.on("connect", (err) => {
+        peripheral.once("connect", (err) => {
             if (err) throw new Error(err);
             console.log('Connected')
             ConnectedDevice = peripheral;
@@ -201,9 +180,9 @@ exports.bleConnect = async (peripheralId) => {
 
         });
 
-        peripheral.on("disconnect", (err) => {
+        peripheral.once("disconnect", (err) => {
             if (err) throw new Error(err);
-            console.log('Disconnected')
+            console.log('Disconnected');
             ConnectedDevice = undefined;
 
             mainWindow.webContents.send(bleConstants.BLEEvents, {
@@ -314,9 +293,9 @@ exports.bleUnsubscribe = async (data) => {
 }
 
 exports.bleWrite = async (data) => {
-    const {writeData} = data;
-    
-    if(!writeData) {
+    const { writeData } = data;
+
+    if (!writeData) {
         writeLogs('logs.txt', generateLogData('BLE Write', 'No data to write'))
         throw new Error('No data to write.')
     }
@@ -336,15 +315,31 @@ exports.bleWrite = async (data) => {
 
     try {
 
-        characteristic.on('write', (error) => {
-            if(error){
+        characteristic.once('write', (error) => {
+            if (error) {
                 writeLogs('logs.txt', generateLogData('BLE Write', `Error: ${error}`))
+                mainWindow.webContents.send(bleConstants.BLEEvents, {
+                    type: 'ble-write',
+                    data: {
+                        success: false,
+                        data: error
+                    }
+                });
                 return;
             }
+            
             writeLogs('logs.txt', generateLogData('BLE Write', `Written successfully`))
+
+            mainWindow.webContents.send(bleConstants.BLEEvents, {
+                type: 'ble-write',
+                data: {
+                    success: true,
+                }
+            });
+
         });
 
-        await characteristic.writeAsync( Buffer.from(writeData,'utf-8') , false);
+        await characteristic.writeAsync(Buffer.from(writeData, 'utf-8'), false);
 
     } catch (e) {
         writeLogs('logs.txt', generateLogData('BLE Write', `Error: ${e?.message}`))

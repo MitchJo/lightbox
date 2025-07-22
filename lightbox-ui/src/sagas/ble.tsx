@@ -1,5 +1,5 @@
 import { all, call, fork, put, take, takeLatest } from "redux-saga/effects";
-import { BLE_CONNECT, BLE_CONNECTION_STATUS, BLE_DISCONNECT, BLE_EVENTS, BLE_SCANNING_STATUS, BLE_START_SCAN, BLE_STOP_SCAN, BLE_SUBSCRIBE, BLE_SUBSCRIPTION_STATUS, BLE_UNSUBSCRIBE, BLE_WRITE } from "../constants";
+import { BLE_CONNECT, BLE_CONNECTION_STATUS, BLE_DISCONNECT, BLE_EVENTS, BLE_SCANNING_STATUS, BLE_START_SCAN, BLE_STOP_SCAN, BLE_SUBSCRIBE, BLE_SUBSCRIPTION_STATUS, BLE_UNSUBSCRIBE, BLE_WRITE, BLE_WRITE_STATUS } from "../constants";
 import { bleConnect, bleDisconnect, bleEventsChannel, bleStartScan, bleStopScan, bleSubscribe, bleUnsubscribe, bleWrite } from "../utils/ble";
 import { bleActions } from "../reducers/bleConnection";
 import { bleDevicesActions } from "../reducers/bleDevices";
@@ -14,12 +14,24 @@ function* handleOnBleConnection(data: any): Generator<any, any, any> {
 
     const { connected, id } = data || {};
 
-    yield put(setBleConnectionStatus({ connection: connected ? BLE_CONNECTION_STATUS.CONNECTED : BLE_CONNECTION_STATUS.DISCONNECTED, deviceId: connected ? id : '', serviceCharacteristics: undefined }))
+    yield put(setBleConnectionStatus({ 
+        connection: connected ? BLE_CONNECTION_STATUS.CONNECTING : BLE_CONNECTION_STATUS.DISCONNECTED, 
+        deviceId: connected ? id : '', 
+        serviceCharacteristics: undefined,
+        scan: BLE_SCANNING_STATUS.IDLE
+    }))
+    
 }
 
 function* handleBLEServicesCharacteristics(data: any) {
     const { setServiceCharacteristics } = bleActions;
-    yield put(setServiceCharacteristics({ serviceCharacteristics: data }))
+    yield put(setServiceCharacteristics({ serviceCharacteristics: data, connection: BLE_CONNECTION_STATUS.CONNECTED }))
+}
+
+function* handleWriteStatus(data: any){
+    const { setWriteStatus }= bleActions;
+    console.log(data);
+    yield put( setWriteStatus({writeStatus: BLE_WRITE_STATUS.IDLE }) )
 }
 
 
@@ -41,6 +53,10 @@ function* startListeningBleEvents(channel: any): Generator<any, any, any> {
 
             case 'ble-notification':
                 console.log(data);
+                break;
+
+            case 'ble-write':
+                yield call(handleWriteStatus, data);
                 break;
 
             default:
@@ -105,12 +121,14 @@ function* callUnsubscribe({ data }: any): Generator<any, any, any> {
 }
 
 function* callBleWrite({ data }: any): Generator<any, any, any> {
-    
+    const { setWriteStatus } = bleActions;
+    yield put( setWriteStatus( {writeStatus: BLE_WRITE_STATUS.WRITING} ) )
     try {
         const response = yield call(bleWrite, data);
         console.log(response);
     } catch (e) {
         console.log(e)
+        yield put( setWriteStatus(BLE_WRITE_STATUS.IDLE) )
     }
 
 }

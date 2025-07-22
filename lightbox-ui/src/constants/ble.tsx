@@ -10,6 +10,11 @@ export const BLE_EVENTS = "BLE_EVENTS";
 
 export const BLE_WRITE = "BLE_WRITE";
 
+export const BLE_WRITABLE_CHARACTERISTIC = {
+    serviceUUID: '00ff',
+    characteristicUUID: 'ff01'
+}
+
 export enum BLE_SCANNING_STATUS{
     IDLE,
     SCANNING
@@ -25,4 +30,9 @@ export enum BLE_SUBSCRIPTION_STATUS{
     SUBSCRIBED,
     NOT_SUBSCRIBED,
     SUBSCRIBING
+}
+
+export enum BLE_WRITE_STATUS{
+    IDLE,
+    WRITING
 }

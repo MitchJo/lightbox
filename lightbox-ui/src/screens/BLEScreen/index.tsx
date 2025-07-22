@@ -3,7 +3,7 @@ import { Component, For, Show } from "solid-js";
 import useRedux from '../../store';
 import sagaStore from '../../store/saga';
 import { bleConnect, bleDisconnect, bleStartScan, bleStopScan, bleSubscribeToCharacteristic, bleUnsubscribeFromCharacteristic, bleWriteCharacteristic } from "../../actions";
-import { BLE_CONNECTION_STATUS, BLE_SCANNING_STATUS } from "../../constants";
+import { BLE_CONNECTION_STATUS, BLE_SCANNING_STATUS, BLE_WRITE_STATUS } from "../../constants";
 import BLECharacteristics from "../../components/BLECharacteristics";
 
 const BLEScreen: Component = () => {
@@ -58,9 +58,14 @@ const BLEScreen: Component = () => {
             </div>
         </Show>
 
+        <Show when={ble.writeStatus === BLE_WRITE_STATUS.WRITING}>
+            <p>Writing...</p>
+        </Show>
+
         <Show when={ble.connection === BLE_CONNECTION_STATUS.CONNECTING}>
             <p>Establishing Connecting...</p>
         </Show>
+
 
         <div class="devices">
             <For each={bleDevices?.devices || []}>{(item, index) => (
