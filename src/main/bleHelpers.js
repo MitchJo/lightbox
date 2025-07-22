@@ -29,7 +29,7 @@ async function handleDiscovery(peripheral) {
 
     if (!peripheral.advertisement?.localName) return;
 
-    if (peripheral.advertisement.localName.includes('ESP')) {
+    if (peripheral.advertisement.localName.includes('Lightbox')) {
         if (!mainWindow) {
             writeLogs('logs.txt', generateLogData('BLE Scan', 'Could not find mainWindow'))
             return
