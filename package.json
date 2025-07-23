@@ -1,6 +1,6 @@
 {
   "name": "lightbox",
-  "version": "1.4.0",
+  "version": "1.3.0",
   "description": "A windows desktop app to control a lightbox",
   "main": "src/index.js",
   "scripts": {
@@ -8,7 +8,7 @@
     "start": "electron-forge start",
     "package": "electron-forge package",
     "clean": "rimraf out",
-    "make": "npm run clean & electron-forge make --arch=x64 && sign.bat"
+    "make": "npm run clean & electron-forge make --arch=x64 --trace-deprecation && sign.bat"
   },
   "keywords": [
     "LED",
