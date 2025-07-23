@@ -151,10 +151,9 @@ function* callBleWrite({ data }: any): Generator<any, any, any> {
 
 
 function* callStartScan(): Generator<any, any, any> {
-    const { resetBleStatus, setBleScanning } = bleActions;
+    const { setBleScanning } = bleActions;
     const { resetDevices } = bleDevicesActions;
 
-    yield put(resetBleStatus({}));
     yield put(resetDevices({}));
 
     try {
