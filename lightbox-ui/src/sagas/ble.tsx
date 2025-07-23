@@ -1,6 +1,6 @@
 import { all, call, fork, put, take, takeLatest } from "redux-saga/effects";
-import { BLE_CONNECT, BLE_CONNECTION_STATUS, BLE_DISCONNECT, BLE_EVENTS, BLE_SCANNING_STATUS, BLE_START_SCAN, BLE_STOP_SCAN, BLE_SUBSCRIBE, BLE_SUBSCRIPTION_STATUS, BLE_UNSUBSCRIBE, BLE_WRITE, BLE_WRITE_STATUS } from "../constants";
-import { bleConnect, bleDisconnect, bleEventsChannel, bleStartScan, bleStopScan, bleSubscribe, bleUnsubscribe, bleWrite } from "../utils/ble";
+import { BLE_ADAPTER_STATE, BLE_CONNECT, BLE_CONNECTION_STATUS, BLE_DISCONNECT, BLE_EVENTS, BLE_SCANNING_STATUS, BLE_START_SCAN, BLE_STOP_SCAN, BLE_SUBSCRIBE, BLE_SUBSCRIPTION_STATUS, BLE_UNSUBSCRIBE, BLE_WRITE, BLE_WRITE_STATUS } from "../constants";
+import { bleConnect, bleDisconnect, bleEventsChannel, bleInit, bleStartScan, bleStopScan, bleSubscribe, bleUnsubscribe, bleWrite } from "../utils/ble";
 import { bleActions } from "../reducers/bleConnection";
 import { bleDevicesActions } from "../reducers/bleDevices";
 
@@ -33,6 +33,23 @@ function* handleWriteStatus(data: any){
     yield put( setWriteStatus({writeStatus: BLE_WRITE_STATUS.IDLE }) )
 }
 
+function* handleAdapterState(data: any) {
+    const { setAdapterState, setBleConnectionStatus } = bleActions;
+
+    if(data !== 'poweredOn') { 
+        yield put(setBleConnectionStatus({ 
+            connection: BLE_CONNECTION_STATUS.DISCONNECTED, 
+            deviceId: '', 
+            serviceCharacteristics: undefined,
+            scan: BLE_SCANNING_STATUS.IDLE,
+            adapterState: BLE_ADAPTER_STATE.INVALID
+        }))
+        return;
+    }
+
+    yield put( setAdapterState({ adapterState: BLE_ADAPTER_STATE.ON }) )
+}
+
 
 function* startListeningBleEvents(channel: any): Generator<any, any, any> {
     while (true) {
@@ -56,6 +73,10 @@ function* startListeningBleEvents(channel: any): Generator<any, any, any> {
 
             case 'ble-write':
                 yield call(handleWriteStatus, data);
+                break;
+
+            case 'ble-adapterState':
+                yield call(handleAdapterState, data);
                 break;
 
             default:
@@ -160,7 +181,13 @@ function* callStopScan(): Generator<any, any, any> {
 
 function* callBleEvents(): Generator<any, any, any> {
     const channel = yield call(bleEventsChannel);
-    if (channel) yield fork(startListeningBleEvents, channel);
+    if(!channel) return;
+    yield fork(startListeningBleEvents, channel);
+    try{
+        yield call(bleInit);
+    }catch(e){
+        console.log(e);
+    }
 }
 
 function* bleStartScanListener() {

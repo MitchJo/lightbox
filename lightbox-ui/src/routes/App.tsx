@@ -4,11 +4,15 @@ import ConfigurationForm from "../components/ConfigurationForm";
 
 import useRedux from '../store';
 import sagaStore from '../store/saga';
-import { mqttConnect, mqttDisconnect, mqttEvents, readConfig, readLogs, saveConfig, wifiEvents } from "../actions";
+import { 
+    mqttConnect, mqttDisconnect, mqttEvents, readConfig, readLogs, saveConfig, wifiEvents,
+    bleConnect, bleDisconnect, bleStartScan, bleStopScan, listenToBleEvents
+ } from "../actions";
 import { onMount } from "solid-js";
 import LogsContainer from "../components/LogsContainer";
-import { bleConnect, bleDisconnect, bleStartScan, bleStopScan, listenToBleEvents } from "../actions/ble";
+import {  } from "../actions";
 import BLEDeviceConnectionForm from "../components/BLEDeviceConnectionForm";
+import { BLE_ADAPTER_STATE } from "../constants";
 
 const App = (props: any) => {
 
@@ -82,6 +86,9 @@ const App = (props: any) => {
 
     const showBleForm = () => {
         if (!bleModal) return;
+
+        if(ble.adapterState !== BLE_ADAPTER_STATE.ON) return;
+
         const isOpen = bleModal?.getAttribute('open');
         if (isOpen) {
             handleBleFormClose();
@@ -92,6 +99,7 @@ const App = (props: any) => {
 
     const handleBleConnect = (id: string) => {
         handleBleFormClose();
+        if(ble.adapterState !== BLE_ADAPTER_STATE.ON) return;
         onBLEConnect(id);
     }
 
@@ -126,11 +134,12 @@ const App = (props: any) => {
 
         <Modal ref={bleModal}>
             <BLEDeviceConnectionForm deviceLists={bleDevices?.devices} 
-            onConnect={handleBleConnect} 
-            onStartScan={onBLEStartScan} 
-            onStopScan={onBLEStopScan} 
-            scanStatus={ble.scan}
-            onClose={handleBleFormClose}
+                onConnect={handleBleConnect} 
+                onStartScan={onBLEStartScan} 
+                onStopScan={onBLEStopScan} 
+                scanStatus={ble.scan}
+                adapterState={ble.adapterState}
+                onClose={handleBleFormClose}
             />
         </Modal>
 

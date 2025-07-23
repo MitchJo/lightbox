@@ -6,5 +6,6 @@ module.exports = {
     BLESubscribe: 'ble-subscribe',
     BLEUnsubscribe: 'ble-unsubscribe',
     BLEEvents: 'ble-events',
-    BLEWrite: 'ble-write'
+    BLEWrite: 'ble-write',
+    BLEInit: 'ble-init'
 };

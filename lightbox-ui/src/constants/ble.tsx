@@ -36,3 +36,9 @@ export enum BLE_WRITE_STATUS{
     IDLE,
     WRITING
 }
+
+export enum BLE_ADAPTER_STATE{
+    ON = 'poweredOn',
+    OFF = 'poweredOff',
+    INVALID = 'invalid'
+}

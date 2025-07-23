@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit"
-import { BLE_SCANNING_STATUS, BLE_CONNECTION_STATUS, BLE_SUBSCRIPTION_STATUS, BLE_WRITE_STATUS } from "../constants";
+import { BLE_SCANNING_STATUS, BLE_CONNECTION_STATUS, BLE_SUBSCRIPTION_STATUS, BLE_WRITE_STATUS, BLE_ADAPTER_STATE } from "../constants";
 
 interface BleState {
+    adapterState: BLE_ADAPTER_STATE,
     connection: BLE_CONNECTION_STATUS,
     scan: BLE_SCANNING_STATUS,
     deviceId: string,
@@ -11,6 +12,7 @@ interface BleState {
 }
 
 const initialState = { 
+    adapterState: BLE_ADAPTER_STATE.INVALID,
     connection: BLE_CONNECTION_STATUS.DISCONNECTED, 
     scan: BLE_SCANNING_STATUS.IDLE, 
     deviceId: '', 
@@ -45,6 +47,11 @@ const BleSlice = createSlice({
         },
 
         setWriteStatus(state, action) {
+            state = { ...state, ...action.payload }
+            return state;
+        },
+
+        setAdapterState(state, action){
             state = { ...state, ...action.payload }
             return state;
         },

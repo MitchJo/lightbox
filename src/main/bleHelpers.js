@@ -7,6 +7,17 @@ let BLEDevices = new Map([]);
 let ConnectedDevice;
 let mainWindow;
 
+function stateChangeHandler(event) {
+    if (!mainWindow) return;
+
+    if(event !== 'poweredOn') disconnectDevice();
+
+    mainWindow.webContents.send(bleConstants.BLEEvents, {
+        type: 'ble-adapterState',
+        data: event
+    });
+}
+
 function bufferToUintArray(buf) {
     console.log(typeof (buf))
     try {
@@ -54,8 +65,8 @@ async function handleDiscovery(peripheral) {
 async function disconnectDevice() {
     if (!ConnectedDevice) return;
     try {
-        await ConnectedDevice.disconnectAsync();
         BLEDevices.clear();
+        await ConnectedDevice.disconnectAsync();
         ConnectedDevice = undefined;
     } catch (e) {
         throw new Error(e.message || 'Cannot disconnect');
@@ -124,7 +135,7 @@ exports.bleStartScan = async () => {
 
     try {
 
-        await noble.waitForPoweredOnAsync();
+        await noble.waitForPoweredOnAsync(30000);
 
         await noble.startScanningAsync([], false);
 
@@ -327,7 +338,7 @@ exports.bleWrite = async (data) => {
                 });
                 return;
             }
-            
+
             writeLogs('logs.txt', generateLogData('BLE Write', `Written successfully`))
 
             mainWindow.webContents.send(bleConstants.BLEEvents, {
@@ -353,11 +364,38 @@ exports.bleCleanUp = async () => {
         BLEDevices.clear();
         ConnectedDevice = null;
         await noble.stopScanningAsync();
+        noble.removeListener("stateChange", stateChangeHandler );
         noble.stop();
         console.log('noble stopped');
     } catch (e) {
 
     }
+}
+
+exports.bleInit =  async () => {
+    if (!mainWindow) {
+        writeLogs('logs.txt', generateLogData('BLE Initializing', 'Could not find mainWindow'))
+        throw new Error('Main window not available...')
+    };
+
+    noble.on('stateChange', stateChangeHandler)
+
+    try{
+        writeLogs('logs.txt', generateLogData('BLE Initializing', 'Start initializing'));
+
+        await noble.waitForPoweredOnAsync(30000);
+        
+        mainWindow.webContents.send(bleConstants.BLEEvents, {
+            type: 'ble-adapterState',
+            data: 'poweredOn'
+        });
+
+        return;
+    }catch(e){
+        writeLogs('logs.txt', generateLogData('BLE Initializing', 'Start initializing'));
+        throw new Error(`Could not initialize:${e.message || 'null'}`)
+    }
+
 }
 
 exports.setMainWindow = (win) => {

@@ -39,6 +39,8 @@ contextBridge.exposeInMainWorld('versions', {
 
   // ble connection handler
 
+  bleInit: () => ipcRenderer.invoke('ble-init', null),
+
   bleStartScan: () => ipcRenderer.invoke('ble-start-scan', null),
   
   bleStopScan: () => ipcRenderer.invoke('ble-stop-scan', null),

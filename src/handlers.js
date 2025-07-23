@@ -113,6 +113,14 @@ exports.initializeHandlers = (app) => {
 
     // ble handler
 
+    ipcMain.handle(bleConstants.BLEInit, (event, payload) => {
+        try {
+            return bleHelpers.bleInit();
+        } catch (e) {
+            throw new Error(e.message);
+        }
+    });
+
     ipcMain.handle(bleConstants.BLEStartScan, async (event, payload) => {
         try {
             return bleHelpers.bleStartScan();

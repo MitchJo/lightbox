@@ -1,5 +1,20 @@
 import { eventChannel } from "redux-saga";
 
+export function bleInit() {
+    return new Promise((resolve, reject) => {
+        if (!window) reject({ message: 'No window object' });
+
+        const api = (window as any)?.versions;
+        if (!api) reject({ message: 'No API object available' })
+
+        const { bleInit: bleAdapterInit } = api;
+        if (!bleAdapterInit) reject({ message: 'API method "bleInit" is not available' })
+
+        bleAdapterInit().then((s: any)=> resolve(s) ).catch((e: any) => reject(e));
+    });
+}
+
+
 export function bleStartScan() {
     return new Promise((resolve, reject) => {
         if (!window) reject({ message: 'No window object' });
