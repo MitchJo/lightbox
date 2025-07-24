@@ -4,15 +4,27 @@ import ConfigurationForm from "../components/ConfigurationForm";
 
 import useRedux from '../store';
 import sagaStore from '../store/saga';
-import { mqttConnect, mqttDisconnect, mqttEvents, readConfig, readLogs, saveConfig, wifiEvents } from "../actions";
+import { 
+    mqttConnect, mqttDisconnect, mqttEvents, readConfig, readLogs, saveConfig, wifiEvents,
+    bleConnect, bleDisconnect, bleStartScan, bleStopScan, listenToBleEvents
+ } from "../actions";
 import { onMount } from "solid-js";
 import LogsContainer from "../components/LogsContainer";
+import {  } from "../actions";
+import BLEDeviceConnectionForm from "../components/BLEDeviceConnectionForm";
+import { BLE_ADAPTER_STATE } from "../constants";
 
 const App = (props: any) => {
 
     const [
-        { configurations, mqtt, logs },
-        { readConfiguration, saveConfigurations, mqttEventsListener, mqttConnectC, mqttDisconnectC, wifiEventListener, onReadLogs }
+        { configurations, mqtt, logs, ble, bleDevices },
+        { 
+            readConfiguration, saveConfigurations, 
+            mqttEventsListener, mqttConnectC, mqttDisconnectC, 
+            wifiEventListener, 
+            onReadLogs, 
+            onListenToBleEvents, onBLEStartScan,onBLEStopScan, onBLEConnect, onBLEDisconnect
+        }
     ] = useRedux(sagaStore, {
         readConfiguration: readConfig,
         saveConfigurations: saveConfig,
@@ -20,11 +32,17 @@ const App = (props: any) => {
         mqttConnectC: mqttConnect,
         mqttDisconnectC: mqttDisconnect,
         wifiEventListener: wifiEvents,
-        onReadLogs: readLogs
+        onReadLogs: readLogs,
+        onListenToBleEvents: listenToBleEvents,
+        onBLEStartScan: bleStartScan,
+        onBLEStopScan: bleStopScan,
+        onBLEConnect: bleConnect,
+        onBLEDisconnect: bleDisconnect,
     });
 
     let configModal: any;
     let logModal: any;
+    let bleModal: any;
 
     const handleConfigFormClose = () => {
         setTimeout(() => {
@@ -35,6 +53,12 @@ const App = (props: any) => {
     const handleConfigFormSubmit = (e: any) => {
         saveConfigurations(e);
         configModal?.close('cancelled')
+    }
+
+    const handleBleFormClose = () => {
+        setTimeout(() => {
+            bleModal?.close('cancelled')
+        }, 10);
     }
 
     const showConfiguration = () => {
@@ -60,21 +84,65 @@ const App = (props: any) => {
 
     }
 
+    const showBleForm = () => {
+        if (!bleModal) return;
+
+        if(ble.adapterState !== BLE_ADAPTER_STATE.ON) return;
+
+        const isOpen = bleModal?.getAttribute('open');
+        if (isOpen) {
+            handleBleFormClose();
+        } else {
+            bleModal?.showModal();
+        }
+    }
+
+    const handleBleConnect = (id: string) => {
+        handleBleFormClose();
+        if(ble.adapterState !== BLE_ADAPTER_STATE.ON) return;
+        onBLEConnect(id);
+    }
+
     onMount(() => {
         readConfiguration();
         mqttEventsListener();
         wifiEventListener();
+        onListenToBleEvents();
     })
 
-
     return <>
-        <Header title="Control your LightBox" onSettings={showConfiguration} onLogs={onLogs} mqttStatus={mqtt.status} onMqttConnect={mqttConnectC} onMqttDisconnect={mqttDisconnectC} />
+        <Header 
+            title="Control your LightBox" 
+            onSettings={showConfiguration} 
+            onLogs={onLogs} 
+            mqttStatus={mqtt.status} 
+
+            onMqttConnect={mqttConnectC} 
+            onMqttDisconnect={mqttDisconnectC}
+
+            bleStatus={ble.connection}
+            onShowBleForm={showBleForm}
+            onBleDisconnect={()=> onBLEDisconnect() }
+            />
         <Modal ref={configModal}>
             <ConfigurationForm onClose={handleConfigFormClose} onFormSubmit={handleConfigFormSubmit} formValues={configurations} />
         </Modal>
+
         <Modal ref={logModal}>
             <LogsContainer logs={logs?.value || ''} onClose={() => logModal?.close('cancelled')} onRefresh={() => onReadLogs() }/>
         </Modal>
+
+        <Modal ref={bleModal}>
+            <BLEDeviceConnectionForm deviceLists={bleDevices?.devices} 
+                onConnect={handleBleConnect} 
+                onStartScan={onBLEStartScan} 
+                onStopScan={onBLEStopScan} 
+                scanStatus={ble.scan}
+                adapterState={ble.adapterState}
+                onClose={handleBleFormClose}
+            />
+        </Modal>
+
         {props.children}
     </>
 };

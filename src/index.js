@@ -2,7 +2,7 @@
 const { app, BrowserWindow } = require('electron/main')
 const isDev = false;
 const path = require('node:path');
-const { mqttHelpers, wifiConnectionHelpers } = require('./main');
+const { mqttHelpers, wifiConnectionHelpers, bleHelpers } = require('./main');
 const { initializeHandlers } = require('./handlers');
 
 if (process.platform === 'win32') {
@@ -42,6 +42,7 @@ app.whenReady().then(() => {
 
     mqttHelpers.setMainWindow(mainWindow);
     wifiConnectionHelpers.setMainWindow(mainWindow);
+    bleHelpers.setMainWindow(mainWindow);
 
     initializeHandlers(app);
 
@@ -57,6 +58,9 @@ app.whenReady().then(() => {
 app.on('window-all-closed', () => {
     mqttHelpers.setMainWindow(null);
     wifiConnectionHelpers.setMainWindow(null);
+    bleHelpers.setMainWindow(null);
+
+    bleHelpers.bleCleanUp();
 
     if (process.platform !== 'darwin') {
         app.quit()

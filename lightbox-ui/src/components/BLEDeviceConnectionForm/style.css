@@ -1,0 +1,26 @@
+.ble-container{
+    background-color: var(--surface-color);
+    color: var(--text-color);
+    margin: 0 auto;
+    margin-top: 25px;
+    height: 90vh;
+    max-height: 90vh;
+    overflow: scroll;
+    padding: 1em;
+    box-sizing: border-box;
+}
+
+.ble-container .action-buttons{
+    display: flex;
+    gap: 1em;
+}
+
+.ble-container .devices .device{
+    width: 100px;
+    height: 100px;
+    background: #f5f5f5;
+    word-wrap: break-word;
+    line-height: 1.2;
+    padding: .5em;
+    box-sizing: border-box;
+}

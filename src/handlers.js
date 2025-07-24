@@ -1,7 +1,7 @@
 const { ipcMain } = require('electron')
 
-const {mqttConstants, fileConstants, wifiConstants, logsConstants} = require("./constants");
-const { mqttHelpers, configurationFiles, wifiConnectionHelpers, fileLogger } = require("./main");
+const { mqttConstants, fileConstants, wifiConstants, logsConstants, bleConstants } = require("./constants");
+const { mqttHelpers, configurationFiles, wifiConnectionHelpers, fileLogger, bleHelpers } = require("./main");
 const path = require('path')
 
 exports.initializeHandlers = (app) => {
@@ -50,7 +50,7 @@ exports.initializeHandlers = (app) => {
 
     });
 
-    ipcMain.handle(fileConstants.getConfiguration, async (event, data) => { 
+    ipcMain.handle(fileConstants.getConfiguration, async (event, data) => {
         try {
             return configurationFiles.getConfigurations(appFilesDir);
         } catch (error) {
@@ -59,42 +59,42 @@ exports.initializeHandlers = (app) => {
     });
 
 
-    ipcMain.handle(wifiConstants.wifiConnect, async(event, data) => {
-        try{
+    ipcMain.handle(wifiConstants.wifiConnect, async (event, data) => {
+        try {
             return wifiConnectionHelpers.connectToWifi(data);
-        }catch(e){
-            throw new Error(e.message||'Cannot connect to WiFi');
+        } catch (e) {
+            throw new Error(e.message || 'Cannot connect to WiFi');
         }
     });
 
-    ipcMain.handle(wifiConstants.wifiScan, async(event, data) => {
-        try{
+    ipcMain.handle(wifiConstants.wifiScan, async (event, data) => {
+        try {
             return wifiConnectionHelpers.scanWifi();
-        }catch(e){
-            throw new Error(e.message||'Cannot scan WiFi networks');
+        } catch (e) {
+            throw new Error(e.message || 'Cannot scan WiFi networks');
         }
     });
 
     ipcMain.handle(wifiConstants.wifiState, async (event, data) => {
-        try{
+        try {
             return await wifiConnectionHelpers.getCurrentWifi();
-        }catch(e){
-            throw new Error(e.message|| 'Cannot get Wifi State');
+        } catch (e) {
+            throw new Error(e.message || 'Cannot get Wifi State');
         }
     })
 
-    ipcMain.handle(wifiConstants.wifiReset,(event,data) => {
-        try{
+    ipcMain.handle(wifiConstants.wifiReset, (event, data) => {
+        try {
             return wifiConnectionHelpers.resetWifi();
-        }catch(e){
-            throw new Error(e.message|| 'Cannot reset Wifi');
+        } catch (e) {
+            throw new Error(e.message || 'Cannot reset Wifi');
         }
     })
 
     ipcMain.handle(wifiConstants.initiateProvision, async (event, payload) => {
-        try{
+        try {
             return await wifiConnectionHelpers.initateDeviceProvision(payload)
-        }catch(e){
+        } catch (e) {
             throw new Error(e.message);
         }
 
@@ -102,12 +102,80 @@ exports.initializeHandlers = (app) => {
 
 
     ipcMain.handle(logsConstants.readLogs, async (event, payload) => {
-        try{
+        try {
             return fileLogger.readLogs(appFilesDir, 'logs.txt')
-        }catch(e){
+        } catch (e) {
             throw new Error(e.message);
         }
 
     })
+
+
+    // ble handler
+
+    ipcMain.handle(bleConstants.BLEInit, (event, payload) => {
+        try {
+            return bleHelpers.bleInit();
+        } catch (e) {
+            throw new Error(e.message);
+        }
+    });
+
+    ipcMain.handle(bleConstants.BLEStartScan, async (event, payload) => {
+        try {
+            return bleHelpers.bleStartScan();
+        } catch (e) {
+            throw new Error(e.message);
+        }
+    })
+
+    ipcMain.handle(bleConstants.BLEStopScan, async (event, payload) => {
+        try {
+            return bleHelpers.bleStopScan();
+        } catch (e) {
+            throw new Error(e.message);
+        }
+    })
+
+    ipcMain.handle(bleConstants.BLEConnect, async (event, payload) => {
+        try {
+            return bleHelpers.bleConnect(payload);
+        } catch (e) {
+            throw new Error(e.message);
+        }
+    })
+
+    ipcMain.handle(bleConstants.BLEDisconnect, async (event, payload) => {
+        try {
+            return bleHelpers.bleDisconnect();
+        } catch (e) {
+            throw new Error(e.message);
+        }
+    })
+
+    ipcMain.handle(bleConstants.BLESubscribe, async (event, payload) => {
+        try {
+            return bleHelpers.bleSubscribe(payload);
+        } catch (e) {
+            throw new Error(e.message);
+        }
+    })
+
+    ipcMain.handle(bleConstants.BLEUnsubscribe, async (event, payload) => {
+        try {
+            return bleHelpers.bleUnsubscribe(payload);
+        } catch (e) {
+            throw new Error(e.message);
+        }
+    })
+
+    ipcMain.handle(bleConstants.BLEWrite, async (event, payload) => {
+        try {
+            return bleHelpers.bleWrite(payload);
+        } catch (e) {
+            throw new Error(e.message);
+        }
+    })
+
 
 }
